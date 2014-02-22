@@ -11,5 +11,5 @@ class FieldTalkContext < TalkContext
 	tag :see, ReferenceTalkContext, :multi => true
 	tag_end
 
-	validate_property "Field $(:name): name cannot start with __", :name, { |ctx, name| not name.start_with?("__") }
+	validate_property "Field name cannot start with __", :name, { |ctx, name| not name.start_with?("__") }
 end

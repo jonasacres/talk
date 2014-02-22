@@ -1,3 +1,16 @@
+# Lifecycle:
+#   Open context
+#   Accumulate terms for property parsing
+#   Parse and validate tags
+#   Close context
+#     Parse and validate properties
+#     Postprocessing
+#     Validate context
+#     Perform registrations
+#   
+#   Process input into new contexts until all input is read
+#   Cross-refrence each context
+
 class TalkContext
 	class << self
 		@properties = {}
@@ -17,6 +30,11 @@ class TalkContext
 		attr_reader :tags, :properties
 		attr_reader :references, :postprocesses, :registrations
 		attr_reader :propertyValidators, :tagValidators, :finalValidators
+
+		Dir["contexts/*.rb"].each { |file| require file }
+
+		# Parser context definition methods
+		# Documented in README.md
 
 		def property(identifier, params = {})
 			defaults = {
@@ -75,6 +93,8 @@ class TalkContext
 		def validate_final(errMsg, &block)
 			@finalValidators.push { :message => errMsg, :validator => block }
 		end
+
+		# Support methods for parser context definition methods
 
 		def addRegistration(namespace, name, context)
 			@registry[namespace] ||= {}
@@ -165,7 +185,7 @@ class TalkContext
 		end
 	end
 
-	attr_reader :file, :line, :tag, :params
+	attr_reader :file, :line, :tag, :params, :children
 
 	def initialize(tag, file, line, params)
 		@tag = tag
@@ -186,10 +206,18 @@ class TalkContext
 	end
 
 	## Data management
+	def properties()
+		result = {}
+		self.class.properties.keys.each do |prop|
+			result[prop] = instance_variable_get("@#{prop.to_s}")
+		end
+
+		result
+	end
 
 	# Returns a list of child contexts for a given tag name
 	def children(tag)
-		children[tag.to_sym]
+		@children[tag.to_sym]
 	end
 
 	# Tests if we support children of the given tag name
@@ -198,10 +226,13 @@ class TalkContext
 	end
 
 	## Parsing
+
+	# Parses a single word into the context
 	def parse(word)
 		@words.push word
 	end
 
+	# Processes all words parsed into this context
 	def parseDataString
 		if @words.length == 0 and params.has_key? :default then
 			@words = params[:default].split
@@ -246,6 +277,8 @@ class TalkContext
 		return nil unless hasTag? tag
 
 		params = self.class.tags[tag]
+		return nil if params[:context].nil?
+
 		params[:context].new(tag, file, line, params)
 	end
 
@@ -255,6 +288,7 @@ class TalkContext
 
 	def close
 		self.class.postprocesses.each { |post| post.call(self) }
+		parseDataString
 
 		errors = 0
 		errors += validateContext
@@ -285,8 +319,8 @@ class TalkContext
 		errors = validateTag(tagContext, context)
 		return false if errors > 0
 
-		children[tagContext.tag] ||= []
-		children[tagContext.tag].push tagContext
+		@children[tagContext.tag] ||= []
+		@children[tagContext.tag].push tagContext
 		true
 	end
 
@@ -303,18 +337,6 @@ class TalkContext
 	end
 
 	## Housekeeping chores to perform after context is closed
-	# Lifecycle:
-	#   Open context
-	#   Accumulate terms for property parsing
-	#   Parse and validate tags
-	#   Close context
-	#     Parse and validate properties
-	#     Postprocessing
-	#     Validate context
-	#     Perform registrations
-	#   
-	#   Process input into new contexts until all input is read
-	#   Cross-refrence each context
 
 	def performRegistrations
 		self.class.registrations.each do |reg|
@@ -352,7 +374,22 @@ class TalkContext
 		errors
 	end
 
+	## General I/O stuff
+
+	def generateParseError(message)
+		TalkParser::parseError(@tag, @file, @line, message)
+	end
+
 	def to_s
-		""
+		values = []
+		properties().each { |k,v| values.push "\"#{k}\": \"#{v}\"" }
+		
+		@children.each do |tag, contexts|
+			lines = []
+			contexts.each { |ctx| lines.push("\"#{ctx.to_s}\"") }
+			values.push "\"@#{tag}\": [ #{lines.join(', ')} ]"
+		end
+
+		"{ #{values.join(", ")} }"
 	end
 end
