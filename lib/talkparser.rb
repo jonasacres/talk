@@ -1,15 +1,13 @@
+require "talkcontext/talkcontext"
+
 class TalkParser
-	require "talkcontext/talkcontext"
+	@errors = []
 
 	class << self
 		attr_reader :errors
 
-		def initialize()
-			@errors = []
-		end
-
-		def self.parseError(tag, file, line, message)
-			errors.push { :file => file, :line => line, :tag => tag, :message => message }
+		def parseError(tag, file, line, message)
+			errors.push({ :file => file, :line => line, :tag => tag, :message => message })
 			puts "#{file}:#{line}  in @#{tag.to_s}: #{message}"
 		end
 	end
@@ -17,6 +15,7 @@ class TalkParser
 	attr_reader :filename
 
 	def initialize()
+		@contexts = [ Talk::BaseTalkContext.new ]
 	end
 
 	def parseFile(filename)
@@ -45,13 +44,13 @@ class TalkParser
 
 		self.class.errors.length - startErrors # return number of errors generated in parsing this record
 	end
-	
+
 	def parseLine(words, file, line)
 		return if lineIsComment?(words)
 		words.each do |word|
 			if wordIsTag?(word) then
 				tag = identifierFromTagWord(word)
-				parseTag tag
+				parseTag(tag, file, line)
 			else
 				@contexts.last.parse(word)
 			end
@@ -111,6 +110,6 @@ class TalkParser
 	end
 
 	def lineIsComment?(line)
-		words[0][0] == '#'
+		line[0][0] == '#'
 	end
 end
