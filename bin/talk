@@ -6,9 +6,9 @@ $LOAD_PATH.unshift(lib) if File.directory?(lib) && !$LOAD_PATH.include?(lib)
 
 require 'talk'
 
-$parser = TalkParser.new
+$parser = Talk::Parser.new
 
-def processFile(file)
+def process_file(file)
 	unless File.readable?(file) then
 		$stderr.write "talk: #{file}: No such file or directory\n"
 		return
@@ -16,13 +16,13 @@ def processFile(file)
 
 	if File.directory?(file) then
 		Dir.glob(File.join(file, "/**/*.talk")).each do |subfile|
-			processFile(subfile)
+			process_file(subfile)
 		end
 	else
-		$parser.parseFile(file)
+		$parser.parse_file(file)
 	end
 end
 
 ARGV.each do |file|
-	processFile(file)
+	process_file(file)
 end

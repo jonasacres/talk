@@ -1,5 +1,3 @@
 #!/usr/bin/ruby
 
-module Talk
-	require 'talkparser'
-end
+require 'parser'

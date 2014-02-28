@@ -102,7 +102,7 @@ The above defines an `@title` tag that represents a string, as interpretted by t
 | Parameter    | Datatype    |  Default   | Description
 | ------------ |:-----------:|:----------:|:-----------
 | :default | String | `nil` | If specified, and no property data is provided for the child tag in the input, then the given string will be supplied as property data to the child tag.
-| :implicitProperty | Boolean | `false` | If true, all property data supplied to the context beyond the last defined property will be sent as property data to the child tag.
+| :semiproperty | Boolean | `false` | If true, all property data supplied to the context beyond the last defined property will be sent as property data to the child tag.
 | :multi | Boolean | `false` | If `false`, a parser error will be generated if the tag appears more than once in the context.
 | :required | Boolean | `false` | If true, a parser error will be generated if the tag does not appear in the context.
 | :unique | Symbol | `nil` | If non-nil, a parser error will be generated if two sibling tags of this type have matching property values identified by the given symbol
