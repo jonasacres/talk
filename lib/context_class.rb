@@ -26,7 +26,6 @@ module Talk
       ## All of this is documented in ./README.md
       def property(name, params={})
         raise "Duplicate property definition #{name} in #{@classname}" if @properties.has_key?(name)
-        @properties[name] = params.merge({ name:name })
         @property_map.push(name)
         add_property_support(name, params)
       end
@@ -55,7 +54,7 @@ module Talk
         @references.push({ namespace:namespace, name:name})
       end
 
-      def postprocess(&block)
+      def postprocess(block)
         @postprocesses.push block
       end
 
@@ -69,7 +68,7 @@ module Talk
       end
 
       def bridge_tag_to_property(name)
-        fixed_keys = { required: false }
+        fixed_keys = { required: false, length:[0,nil] }
         allowed_keys = [:transform, :context]
 
         # the new property will have parameters pre-defined fixed_keys, and also
@@ -90,6 +89,10 @@ module Talk
         @tags[key][:unique]
       end
 
+      def has_tag?(tag)
+        @tags.has_key?(tag)
+      end
+
       ## Subclassing magic
       def all_contexts
         Dir["#{$:[0]}/contexts/*.rb"].collect { |file| context_for_name(name) }
@@ -100,15 +103,23 @@ module Talk
       end
 
       def predefined_context_for_name(name)
-        begin
-          Talk.const_get classname_for_filename(name)
-        rescue NameError
-          nil
-        end
+        props = Talk.instance_variable_get("@contexts")
+        props.nil? ? nil : props[name]
       end
 
       def make_context(name)
-        define_subclass(name)
+        new_classname = classname_for_filename(name)
+        
+        subclass = Class.new(Talk::Context) do
+          initialize(new_classname)
+        end
+
+        source_file = canonical_path_for_name(name)
+        subclass.class_eval( IO.read(source_file), source_file )
+
+        props = Talk.instance_variable_get("@contexts")
+        props = Talk.instance_variable_set("@contexts", {}) if props.nil?
+        props[new_classname] = subclass
       end
 
       def canonical_path_for_name(name)
@@ -119,19 +130,6 @@ module Talk
         File.basename(name.to_s, ".rb").split('_').collect { |word| word.capitalize }.join("")
       end
 
-      def define_subclass(name)
-        new_classname = classname_for_filename(name)
-        
-        subclass = Class.new(Talk::Context) do
-          initialize(new_classname)
-        end
-
-        source_file = canonical_path_for_name(name)
-        subclass.class_eval( IO.read(source_file), source_file )
-
-        Talk.const_set new_classname, subclass
-      end
-
       ## Support stuff; avoid invoking directly
       def add_key_support(name)
         @transforms[name] = []
@@ -140,15 +138,21 @@ module Talk
 
       def add_property_support(name, params)
         add_key_support(name)
+        add_property_params(name, params)
         add_property_allowed(name, params[:allowed]) if params.has_key?(:allowed)
-        add_property_required(name) if params.has_key?(:required)
-        add_property_transform(name, params[:transform]) if params.has_key?(:transform)
+        add_property_required(name) if params[:required]
+        add_property_transform(name, params[:transform]) unless params[:transform].nil?
+      end
+
+      def add_property_params(name, params)
+        defaults = { :length => 1, :name => name }
+        @properties[name] = defaults.merge(params)
       end
 
       def add_property_allowed(name, allowed)
         ref = "#{@classname}.#{name}"
         norm_allow = normalize_allowed(name, allowed).join(", ")
-        errmsg  = "#{ref}: must be one of #{allowedDesc}"
+        errmsg  = "#{ref}: must be one of #{norm_allow}"
 
         validate( errmsg, name, lambda { |c,v| norm_allow.include? v } )
       end
@@ -157,11 +161,11 @@ module Talk
         ref = "#{@classname}.#{name}"
         errmsg = "#{ref}: required property cannot be omitted"
 
-        validate_final( errmsg, lambda { |c| c.include? name } )
+        validate_final( errmsg, lambda { |c| c.has_key? name } )
       end
 
       def add_property_transform(name, transform)
-        @transforms[name] = transform
+        @transforms[name].push transform
       end
 
       def add_tag_support(name, params)
@@ -175,13 +179,13 @@ module Talk
       def add_tag_singular(name)
         ref = "#{@classname}->@#{name}"
         errmsg = "#{ref}: tag may only be added once"
-        validate_final( errmsg, lambda { |c| not c.has_key? name or c[name].length <= 1 } )
+        validate_final( errmsg, lambda { |c| c.key_multiplicity(name) <= 1 } )
       end
 
       def add_tag_required(name)
         ref = "#{@classname}->@#{name}"
         errmsg = "#{ref}: required tag cannot be omitted"
-        validate_final( errmsg, lambda { |c| c.include? name and c[name].length > 0 } )
+        validate_final( errmsg, lambda { |c| c.has_key? name and c[name].length > 0 } )
       end
 
       def load_child_tags(name, params)
@@ -198,6 +202,7 @@ module Talk
         end
 
         add_property_transform(name, lambda { |c,v| remap[v] })
+        new_allowed
       end
     end
   end

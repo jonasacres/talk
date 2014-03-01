@@ -4,10 +4,10 @@ property :type
 property :name
 
 tag_description
-tag :version, :context => :string, :default => "0"
-tag :caveat, :context => :string, :multi => true
-tag :deprecated, :context => :string
-tag :see, :multi => true
+tag :version, :class => :string, :default => "0"
+tag :caveat, :class => :string, :multi => true
+tag :deprecated, :class => :string
+tag :see, :class => :reference, :multi => true
 tag_end
 
-validate "Field name cannot start with __", :name, { |ctx, name| not name.start_with?("__") }
+validate("Field name cannot start with __", :name, lambda { |ctx, name| not name.start_with?("__") })

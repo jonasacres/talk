@@ -2,14 +2,25 @@ require "parse_error.rb"
 require "context"
 
 module Talk
+  attr_reader :contexts
+  @contexts = {}
+
   class Parser
+    def self.error(tag, file, line, message)
+      raise ParseError, "#{file}:#{line}  parse error near @#{tag}: #{message}"
+    end
+
     def initialize()
-      @contexts = [ Context.context_for_name(:base) ]
+      @contexts = [ Context.context_for_name(:base).new("base", "n/a", "0") ]
+    end
+
+    def parse_file(filename)
+      parse(filename, IO.read(filename))
     end
 
     def parse(filename, contents)
       contents = contents.split("\n") unless contents.class == "Array"
-      contents.each_index { |line_num| parse_line(contents[line_num].strip.split, filename, line_num+1) }
+      contents.each_with_index { |line, line_num| parse_line(line.strip.split, filename, line_num+1) }
     end
 
     def parse_line(words, file, line)
@@ -26,7 +37,7 @@ module Talk
       if word_is_tag?(word) then
         parse_tag(identifier_from_tag_word(word))
       else
-        @contexts.last.parse(word)
+        @contexts.last.parse(word, @file, @line)
       end
     end
 
@@ -36,10 +47,9 @@ module Talk
     end
 
     def parse_supported_tag
-      new_context = @contexts.last.startTag(@tag, @file, @line)
+      new_context = @contexts.last.start_tag(@tag, @file, @line)
       if new_context.nil? then
         curr_ctx = @contexts.pop
-        curr_ctx.close
         @contexts.last.end_tag(curr_ctx) unless @contexts.empty?
       else
         @contexts.push new_context
@@ -48,7 +58,7 @@ module Talk
 
     def parse_unsupported_tag
       stack = Array.new(@contexts)
-      stack.pop until stack.empty? or stack.last.has_key? @tag
+      stack.pop until stack.empty? or stack.last.has_tag? @tag
 
       parse_error("Unsupported tag @#{tag.to_s}") if stack.empty?
 
@@ -59,7 +69,6 @@ module Talk
 
     def close_active_context
       closed_ctx = @contexts.pop
-      closed_ctx.close
 
       @contexts.last.end_tag(closed_ctx) unless @contexts.empty?
     end
@@ -73,7 +82,7 @@ module Talk
     end
 
     def line_is_comment?(line)
-      line[0][0] == '#'
+      line.length > 0 and line[0].length > 0 and line[0][0] == '#'
     end
 
     def parse_error(message)

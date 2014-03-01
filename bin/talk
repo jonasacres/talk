@@ -19,7 +19,12 @@ def process_file(file)
 			process_file(subfile)
 		end
 	else
-		$parser.parse_file(file)
+		begin
+			$parser.parse_file(file)
+		rescue Talk::ParseError => e
+			puts e
+			exit 1
+		end
 	end
 end
 
