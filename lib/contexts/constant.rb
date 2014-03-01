@@ -1,5 +1,5 @@
 property :name
-property :value, :transform => { |v| eval(v) }, :required => false
+property :value, :transform => lambda { |v| eval(v) }, :required => false
 
 tag_description
 tag_end

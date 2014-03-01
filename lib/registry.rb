@@ -2,7 +2,7 @@ module Talk
   class Registry
     class << self
       def add(name, namespace)
-        raise "Duplicate registration #{name} in #{namesapce}" if registered? (name, namespace)
+        raise("Duplicate registration #{name} in #{namesapce}") if registered?(name, namespace)
         @registry ||= {}
         @registry[namespace] ||= []
         @registry[namespace].push name

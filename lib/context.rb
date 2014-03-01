@@ -24,8 +24,14 @@ module Talk
 
     def start_tag(tag, file, line)
       parse_error("Unsupported tag @#{tag}", file, line) unless self.class.tags.has_key?[tag]
-      
-      Context.context_for_name(self.class.tags[tag]).new(tag, file, line)
+      tag_class = self.class.tags[tag][:class]
+      if tag_class.nil? then
+        # @end tags use a nil class
+        close
+        nil
+      else
+        Context.context_for_name(tag_class).new(tag, file, line)
+      end
     end
 
     def end_tag(context)
