@@ -124,9 +124,18 @@ module Talk
 
     def crossreference
       self.class.references.each do |r|
-        registered = Registry.registered?(self[r[:name]], r[:namespace])
-        parse_error("Cross-reference failed: no symbol #{self[r[:name]]} in #{r[:namespace]}") unless registered
+        [*self[r[:name]]].each do |ref_value|
+          skipped = reference_skipped(ref_value, r[:params])
+          registered = Registry.registered?(ref_value, r[:namespace])
+          parse_error("no symbol #{ref_value} in #{r[:namespace]}") unless registered or skipped
+        end
       end
+    end
+
+    def reference_skipped(ref_value, params)
+      return false if params[:skip].nil?
+      return params[:skip].include? ref_value if params[:skip].is_a? Array
+      return params[:skip] == ref_value
     end
 
     ## Key manipulation
@@ -176,13 +185,19 @@ module Talk
 
     def property_range_for_variable_len(offset, word_count, prop_def)
       words_left = word_count - offset
-      meets_min = words_left >= prop_def[:length][0]
-      meets_max = prop_def[:length][1].nil? or words_left <= prop_def[:length][1]
+      min = prop_def[:length][0]
+      max = prop_def[:length][1]
+      meets_min = words_left >= min
+      meets_max = max.nil? or words_left <= max
 
-      parse_error("Property #{prop_def[:name]} takes at least #{min} words; got #{word_count}") unless meets_min
-      parse_error("Property #{prop_def[:name]} takes at most #{max} words; got #{word_count}") unless meets_max
+      parse_error("Property #{prop_def[:name]} takes at least #{min} #{pluralize min, 'word'}; got #{word_count}") unless meets_min
+      parse_error("Property #{prop_def[:name]} takes at most #{max} #{pluralize min, 'word'}; got #{word_count}") unless meets_max
 
       [ offset, word_count-1 ]
+    end
+
+    def pluralize(num, word, suffix="s")
+      num == 1 ? word : word + suffix
     end
 
     ## Output
@@ -211,6 +226,10 @@ module Talk
       end
 
       str
+    end
+
+    def description
+      "@#{tag} #{file}:#{line}"
     end
 
     def to_s

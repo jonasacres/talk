@@ -37,8 +37,9 @@ module Talk
         load_child_tags(name, params)
       end
 
-      def tag_description
-        tag(:description, { :class => :string, :required => true })
+      def tag_description(params={})
+        defaults = { :class => :string, :required => true }.merge(params)
+        tag(:description, defaults)
         bridge_tag_to_property :description
       end
 
@@ -50,8 +51,8 @@ module Talk
         @registrations.push({ namespace:namespace, name: name })
       end
 
-      def reference(name, namespace)
-        @references.push({ namespace:namespace, name:name})
+      def reference(name, namespace, params={})
+        @references.push({ namespace:namespace, name:name, params: params })
       end
 
       def postprocess(block)
@@ -104,7 +105,7 @@ module Talk
 
       def predefined_context_for_name(name)
         props = Talk.instance_variable_get("@contexts")
-        props.nil? ? nil : props[name]
+        props.nil? ? nil : props[classname_for_filename(name)]
       end
 
       def make_context(name)
@@ -185,7 +186,7 @@ module Talk
       def add_tag_required(name)
         ref = "#{@classname}->@#{name}"
         errmsg = "#{ref}: required tag cannot be omitted"
-        validate_final( errmsg, lambda { |c| c.has_key? name and c[name].length > 0 } )
+        validate_final( errmsg, lambda { |c| c.key_multiplicity(name) >= 1 } )
       end
 
       def load_child_tags(name, params)
@@ -196,9 +197,10 @@ module Talk
         new_allowed = []
         remap = {}
 
-        allowed.each do |*v| # *v -> force v to be array even when scalar
-          new_allowed += v
-          v.each { |u| remap[u] = v[0] }
+        allowed.each do |v|
+          vv = [*v] # vv == [ v ] if v is scalar, vv == v if v is already an array
+          new_allowed += vv
+          vv.each { |u| remap[u] = v[0] }
         end
 
         add_property_transform(name, lambda { |c,v| remap[v] })

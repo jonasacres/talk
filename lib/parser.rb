@@ -7,7 +7,8 @@ module Talk
 
   class Parser
     def self.error(tag, file, line, message)
-      raise ParseError, "#{file}:#{line}  parse error near @#{tag}: #{message}"
+      near_msg = tag.nil? ? "" : " near @#{tag}"
+      raise ParseError, "#{file}:#{line}  parse error#{near_msg}: #{message}"
     end
 
     def initialize()
@@ -60,7 +61,7 @@ module Talk
       stack = Array.new(@contexts)
       stack.pop until stack.empty? or stack.last.has_tag? @tag
 
-      parse_error("Unsupported tag @#{tag.to_s}") if stack.empty?
+      parse_error("tag not supported in @#{@contexts.last.tag.to_s}") if stack.empty?
 
       close_active_context until @contexts.last == stack.last
 
@@ -86,7 +87,7 @@ module Talk
     end
 
     def parse_error(message)
-      raise ParseError.new(@tag, @file, @line, message)
+      raise Talk::Parser.error(@tag, @file, @line, message)
     end
   end
 end
