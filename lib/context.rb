@@ -127,23 +127,23 @@ module Talk
       reg[:namespace]
     end
 
+    def crossreference_value(value, namespace)
+      value  = value[:value] if value.is_a? Context
+      registered = Registry.registered?(value, namespace)
+      parse_error("no symbol '#{value}' in #{namespace}") unless registered
+    end
+
     def crossreference
       self.class.references.each do |r|
         namespace = namespace_for_reference(r)
         [*self[r[:name]]].each do |referenced_name|
-          referenced_name  = referenced_name[:value] if referenced_name.is_a? Context
-
-          skipped = reference_skipped?(referenced_name, r[:params])
-          registered = Registry.registered?(referenced_name, namespace)
-          unless registered or skipped then
-            puts self
-          end
-          parse_error("no symbol '#{referenced_name}' in #{namespace}") unless registered or skipped
+          crossreference_value(referenced_name, namespace) unless reference_skipped?(referenced_name, r[:params])
         end
       end
     end
 
     def reference_skipped?(ref_value, params)
+      ref_value = ref_value[:value] if ref_value.is_a? Context
       return false if params[:skip].nil?
       return params[:skip].include? ref_value if params[:skip].is_a? Array
       return params[:skip] == ref_value
