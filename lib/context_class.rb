@@ -47,8 +47,10 @@ module Talk
         tag(:end, { :class => nil })
       end
 
-      def register(namespace, name=:name)
-        @registrations.push({ namespace:namespace, name: name })
+      def register(namespace, params={})
+        defaults = { name: :name, delimiter: nil, namespace: namespace }
+        params = defaults.merge(params)
+        @registrations.push(params)
       end
 
       def reference(name, namespace, params={})
@@ -200,7 +202,7 @@ module Talk
         allowed.each do |v|
           vv = [*v] # vv == [ v ] if v is scalar, vv == v if v is already an array
           new_allowed += vv
-          vv.each { |u| remap[u] = v[0] }
+          vv.each { |u| remap[u] = vv[0] }
         end
 
         add_property_transform(name, lambda { |c,v| remap[v] })

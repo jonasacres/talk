@@ -1,6 +1,6 @@
-property :type, :transform => lambda { |ctx, v| v.downcase }, :allowed => [ "class", "enum", "glossary" ]
+property :type, :transform => lambda { |c, v| v.downcase }, :allowed => [ "class", "enum", "glossary" ]
 property :name
 
-reference :name, lambda {
-	{ "class" => :classes, "glossary" => :glossaries, "enumeration" => :enumerations }[self.type]
+reference :name, lambda { |ctx|
+	{ "class" => :classes, "glossary" => :glossaries, "enumeration" => :enumerations, "enum" => :enumerations }[ctx[:type]]
 }

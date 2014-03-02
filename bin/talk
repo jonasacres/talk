@@ -19,15 +19,17 @@ def process_file(file)
 			process_file(subfile)
 		end
 	else
-		begin
-			$parser.parse_file(file)
-		rescue Talk::ParseError => e
-			puts e
-			exit 1
-		end
+		$parser.parse_file(file)
 	end
 end
 
-ARGV.each do |file|
-	process_file(file)
+begin
+	ARGV.each do |file|
+		process_file(file)
+	end
+
+	$parser.finalize
+rescue Talk::ParseError => e
+	puts e
+	exit 1
 end

@@ -1,4 +1,4 @@
-register :classes
+register :classes, :delimiter => '.'
 property :name
 
 tag_description

@@ -1,4 +1,4 @@
-register :glossaries
+register :glossaries, :delimiter => '.'
 
 property :name
 

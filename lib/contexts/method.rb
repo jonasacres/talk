@@ -1,4 +1,4 @@
-register [:methods, :origin]
+# register :methods
 reference :response, :classes, :skip => [nil, "none"]
 reference :request, :classes, :skip => [nil, "none"]
 reference :followup, :classes, :skip => [nil, "none"]

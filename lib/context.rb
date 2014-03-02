@@ -54,11 +54,11 @@ module Talk
     def close
       process_property_words
       postprocess
-      final_validation
       register
     end
 
     def finalize
+      final_validation
       crossreference
     end
 
@@ -119,20 +119,31 @@ module Talk
     end
 
     def register
-      self.class.registrations.each { |r| Registry.add(self[r[:name]], r[:namespace], self.file, self.line) }
+      self.class.registrations.each { |r| Registry.add(self[r[:name]], r[:namespace], self.file, self.line, r[:delimiter]) }
+    end
+
+    def namespace_for_reference(reg)
+      return reg[:namespace].call(self) if reg[:namespace].methods.include? :call
+      reg[:namespace]
     end
 
     def crossreference
       self.class.references.each do |r|
-        [*self[r[:name]]].each do |ref_value|
-          skipped = reference_skipped(ref_value, r[:params])
-          registered = Registry.registered?(ref_value, r[:namespace])
-          parse_error("no symbol #{ref_value} in #{r[:namespace]}") unless registered or skipped
+        namespace = namespace_for_reference(r)
+        [*self[r[:name]]].each do |referenced_name|
+          referenced_name  = referenced_name[:value] if referenced_name.is_a? Context
+
+          skipped = reference_skipped?(referenced_name, r[:params])
+          registered = Registry.registered?(referenced_name, namespace)
+          unless registered or skipped then
+            puts self
+          end
+          parse_error("no symbol '#{referenced_name}' in #{namespace}") unless registered or skipped
         end
       end
     end
 
-    def reference_skipped(ref_value, params)
+    def reference_skipped?(ref_value, params)
       return false if params[:skip].nil?
       return params[:skip].include? ref_value if params[:skip].is_a? Array
       return params[:skip] == ref_value
@@ -141,11 +152,9 @@ module Talk
     ## Key manipulation
 
     def transformed_value_for_key(key, value)
-      if self.class.transforms.has_key?(key) then
-        self.class.transforms[key].inject(value) { |v, t| t.call(self, v) }
-      else
-        value
-      end
+      transforms = self.class.transforms[key]
+      transforms.each { |t| value = t.call(self, value) } unless transforms.nil?
+      value
     end
 
     def validated_value_for_key(key, value)
@@ -216,7 +225,7 @@ module Talk
 
     def render(indent_level=0)
       indent = "\t" * indent_level
-      str = indent + "@" + self.tag.to_s + "\n"
+      str = indent + "@" + self.tag.to_s + ' ' + @property_words.join(' ') + "\n"
       @contents.each do |key, value|
         if value.is_a? Array then
           str = value.inject(str) { |s, element| s + render_element(indent_level+1, key, element) }

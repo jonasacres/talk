@@ -1,5 +1,3 @@
-register [:name, :language]
-
 property :name
 
 tag_description

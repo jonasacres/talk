@@ -1,4 +1,4 @@
-register :enumerations
+register :enumerations, :delimiter => '.'
 property :name
 
 tag_description

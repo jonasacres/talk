@@ -11,8 +11,15 @@ module Talk
       raise ParseError, "#{file}:#{line}  parse error#{near_msg}: #{message}"
     end
 
-    def initialize()
+    def initialize
       @contexts = [ Context.context_for_name(:base).new("base", "n/a", "0") ]
+      @closed_contexts = []
+    end
+
+    # signal that we are done parsing files, and it is time to do final validation
+    def finalize
+      close_active_context
+      @closed_contexts.each { |ctx| ctx.finalize }
     end
 
     def parse_file(filename)
@@ -50,10 +57,10 @@ module Talk
     def parse_supported_tag
       new_context = @contexts.last.start_tag(@tag, @file, @line)
       if new_context.nil? then
-        curr_ctx = @contexts.pop
-        @contexts.last.end_tag(curr_ctx) unless @contexts.empty?
+        close_active_context
       else
         @contexts.push new_context
+        @closed_contexts.push new_context
       end
     end
 
@@ -69,9 +76,8 @@ module Talk
     end
 
     def close_active_context
-      closed_ctx = @contexts.pop
-
-      @contexts.last.end_tag(closed_ctx) unless @contexts.empty?
+      @closed_contexts.push @contexts.pop
+      @contexts.last.end_tag(@closed_contexts.last) unless @contexts.empty?
     end
 
     def word_is_tag?(word)

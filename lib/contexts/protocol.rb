@@ -1,5 +1,4 @@
 register :protocols
-reference :method, :methods
 
 property :name
 
