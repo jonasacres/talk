@@ -1,4 +1,4 @@
-reference :field, :classes
+reference :name, :classes
 
 property :type
 property :name
