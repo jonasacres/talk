@@ -144,6 +144,9 @@ module Talk
       end
 
       def add_property_support(name, params)
+        defaults = { :required => true }
+        params = defaults.merge(params)
+        
         add_key_support(name)
         add_property_params(name, params)
         add_property_allowed(name, params[:allowed]) if params.has_key?(:allowed)

@@ -1,7 +1,7 @@
 # register :methods
-reference :response, :classes, :skip => [nil, "none"]
-reference :request, :classes, :skip => [nil, "none"]
-reference :followup, :classes, :skip => [nil, "none"]
+reference :response, :classes, :skip => ["none"]
+reference :request, :classes, :skip => ["none"]
+reference :followup, :classes, :skip => ["none"]
 
 property :name
 
