@@ -96,6 +96,10 @@ module Talk
         @tags.has_key?(tag)
       end
 
+      def tag_is_singular?(tag)
+        has_tag? tag and (@tags[tag][:multi] == false or @tags[tag][:multi].nil?)
+      end
+
       ## Subclassing magic
       def all_contexts
         Dir["#{$:[0]}/contexts/*.rb"].collect { |file| context_for_name(name) }

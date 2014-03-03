@@ -5,6 +5,8 @@ lib = File.join(basepath, 'lib')
 $LOAD_PATH.unshift(lib) if File.directory?(lib) && !$LOAD_PATH.include?(lib)
 
 require 'talk'
+require 'pp'
+require 'json'
 
 $parser = Talk::Parser.new
 
@@ -28,7 +30,7 @@ begin
 		process_file(file)
 	end
 
-	$parser.finalize
+	puts JSON.generate($parser.results)
 rescue Talk::ParseError => e
 	puts e
 	exit 1

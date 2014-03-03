@@ -65,7 +65,7 @@ module Talk
     ## Operators and other standard-ish public methods
 
     def each
-      @contents.each { |v| yield v }
+      @contents.each { |k,v| yield k,v }
     end
 
     def [](key)
@@ -243,6 +243,33 @@ module Talk
 
     def to_s
       render
+    end
+
+    def to_h
+      dict = {}
+      @contents.each do |k,v|
+        if v.is_a? Array then
+          if self.class.tag_is_singular? k and v.length > 0
+            dict[k] = hashify_value(v[0])
+          else
+            dict[k] = v.map { |u| hashify_value(u) }
+          end
+        else
+          dict[k] = hashify_value(v)
+        end
+      end
+
+      dict
+    end
+
+    def hashify_value(v)
+      # cache method list to provide big speedup
+      @class_methods ||= {}
+      @class_methods[v.class] ||= v.methods
+
+      return v.to_val if @class_methods[v.class].include? :to_val
+      return v.to_h if @class_methods[v.class].include? :to_h
+      v.to_s
     end
   end
 end

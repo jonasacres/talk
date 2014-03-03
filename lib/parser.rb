@@ -2,7 +2,7 @@ require "parse_error.rb"
 require "context"
 
 module Talk
-  attr_reader :contexts
+  attr_reader :contexts, :finalized
   @contexts = {}
 
   class Parser
@@ -13,6 +13,8 @@ module Talk
 
     def initialize
       @contexts = [ Context.context_for_name(:base).new("base", "n/a", "0") ]
+      @base = @contexts.first
+      @finalized = false
       @closed_contexts = []
     end
 
@@ -20,6 +22,12 @@ module Talk
     def finalize
       close_active_context
       @closed_contexts.each { |ctx| ctx.finalize }
+      finalized = true
+    end
+
+    def results
+      finalize unless @finalized
+      @base.to_h
     end
 
     def parse_file(filename)
