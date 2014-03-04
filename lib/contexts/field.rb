@@ -25,7 +25,7 @@ property :type, :transform => lambda { |c,v| c.dissect_type(v) }
 property :name
 
 tag_description
-tag :version, :class => :string, :default => "0"
+tag :version, :class => :string
 tag :caveat, :class => :string, :multi => true
 tag :deprecated, :class => :string
 tag :see, :class => :reference, :multi => true
