@@ -8,15 +8,17 @@ end
 
 module Talk
   class RegistryEntry
-    attr_reader :file, :line
+    attr_reader :file, :line, :name
 
-    def initialize(file=nil, line=nil)
+    def initialize(name=nil, file=nil, line=nil)
       @file = file
       @line = line
+      @name = name
       @children = {}
     end
 
-    def make_entry(file, line)
+    def make_entry(name, file, line)
+      @name = name
       @file = file
       @line = line
     end
@@ -69,8 +71,8 @@ module Talk
           level = level[component]
         end
 
-        level[split_name.last] ||= RegistryEntry.new(file, line)
-        level[split_name.last].make_entry(file, line) # in case it already existed as a container
+        level[split_name.last] ||= RegistryEntry.new(name, file, line)
+        level[split_name.last].make_entry(name, file, line) # in case it already existed as a container
         add_reverse_lookup(split_name, namespace, level[split_name.last], delimiter)
       end
 

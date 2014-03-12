@@ -79,7 +79,7 @@ Feature: @class -> @field
     | sibling | abbrev |
     | com.example.Sibling | Sibling |
     | com.example.Sibling | example.Sibling |
-    | com.example.sibling | com.example.Sibling |
+    | com.example.Sibling | com.example.Sibling |
 
   Scenario: Define a field that refers to its container class
     Given I have defined a valid class named Container

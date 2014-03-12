@@ -31,6 +31,11 @@ tag :deprecated, :class => :string
 tag :see, :class => :reference, :multi => true
 tag_end
 
+postprocess(lambda do |ctx|
+	registrations = Talk::Registry.get_registrations(ctx[:type].first, :classes)
+	ctx[:type][0] = registrations[0].name unless registrations.nil? or registrations.empty?
+end)
+
 validate("Field name cannot start with __", :name, lambda { |ctx, name| not name.start_with?("__") })
 validate_final("Field name is not a recognized primitive or class", lambda do |ctx|
 	t = ctx[:type]
