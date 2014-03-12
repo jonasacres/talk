@@ -22,13 +22,13 @@ Feature: @enumeration
     | AnEnumeration | This is a test enum |
     | AnotherEnumeration | Here is another one! |
 
-  Scenario Outline: Define an @enumeration with no description
+  Scenario: Define an @enumeration with no description
     Given I define an enumeration
     But I don't give it a description
     When I get the result hash
     Then there should be a parse error
 
-  Scenario Outline: Define an @enumeration with no name
+  Scenario: Define an @enumeration with no name
     Given I define an enumeration
     But I don't give it a name
     When I get the result hash

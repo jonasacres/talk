@@ -21,13 +21,13 @@ Feature: @glossary
     | AGlossary | A test glossary |
     | AnotherGlossary | More testing please |
 
-  Scenario Outline: Define an @glossary with no description
+  Scenario: Define an @glossary with no description
     Given I define a glossary
     But I don't give it a description
     When I get the result hash
     Then there should be a parse error
 
-  Scenario Outline: Define an @glossary with no name
+  Scenario: Define an @glossary with no name
     Given I define an glossary
     But I don't give it a name
     When I get the result hash

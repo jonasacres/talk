@@ -149,9 +149,9 @@ module Talk
         
         add_key_support(name)
         add_property_params(name, params)
+        add_property_transform(name, params[:transform]) unless params[:transform].nil?
         add_property_allowed(name, params[:allowed]) if params.has_key?(:allowed)
         add_property_required(name) if params[:required]
-        add_property_transform(name, params[:transform]) unless params[:transform].nil?
       end
 
       def add_property_params(name, params)
@@ -212,7 +212,10 @@ module Talk
           vv.each { |u| remap[u] = vv[0] }
         end
 
-        add_property_transform(name, lambda { |c,v| remap[v] })
+        add_property_transform(name, lambda do |c,v|
+          return remap[v] if remap.has_key? v
+          v
+        end)
         new_allowed
       end
     end

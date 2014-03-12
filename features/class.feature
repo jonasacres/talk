@@ -23,13 +23,13 @@ Feature: @class
     | Lumberjack | I am a lumberjack, and I am acceptable |
     | com.example.JavaClass | I have a hierarchical name |
 
-  Scenario Outline: Define a class without a description
+  Scenario: Define a class without a description
     Given I have defined a class named NoDescriptionClsas
     But I don't give a description
     When I get the result hash
     Then there should be a parse error
 
-  Scenario Outline: Define a class with a duplicate name
+  Scenario: Define a class with a duplicate name
     Given I have defined a class named DuplicateClass
     And I have given it some random bullshit as a @description
     And I define another class also named DuplicateClass
@@ -55,6 +55,7 @@ Feature: @class
     Then there should be a parse error
 
     Examples:
+    | base |
     | DoesntExist |
     | uint16 |
     | string |
@@ -78,17 +79,17 @@ Feature: @class
     Given I have defined a valid class named NoImplementClass
     And I give it @implement <implement>
     When I get the result hash
-    Then the class ChildClass should have @implements <value>
+    Then the class NoImplementClass should have @implement <value>
 
     Examples:
     | implement | value |
-    | 0 | 0 |
-    | off | 0 |
-    | false | 0 |
-    | no | 0 |
-    | NO | 0 |
-    | False | 0 |
-    | 1 | 1 |
-    | on | 1 |
-    | true | 1 |
-    | yes | 1 |
+    | 0 | false |
+    | off | false |
+    | false | false |
+    | no | false |
+    | NO | false |
+    | False | false |
+    | 1 | true |
+    | on | true |
+    | true | true |
+    | yes | true |

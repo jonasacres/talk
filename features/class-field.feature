@@ -60,7 +60,7 @@ Feature: @class -> @field
     And I have defined a valid class
     And I give it a valid field named foobar of type <sibling>
     When I get the result hash
-    The the field foobar should have type <sibling>
+    Then the field foobar should have type <sibling>
 
     Examples:
     | sibling |
@@ -81,7 +81,7 @@ Feature: @class -> @field
     | com.example.Sibling | example.Sibling |
     | com.example.sibling | com.example.Sibling |
 
-  Scenario Outline: Define a field that refers to its container class
+  Scenario: Define a field that refers to its container class
     Given I have defined a valid class named Container
     And I give it a valid field named foobar of type Container
     When I get the result hash
@@ -101,7 +101,7 @@ Feature: @class -> @field
     | CoolClass |
     | LameClass |
 
-  Scenario Outline: Define a field with an @see class that doesn't exist
+  Scenario: Define a field with an @see class that doesn't exist
     Given I have defined a valid class
     And I give it a valid field named foobar
     And I give foobar @see class DoesntExist
@@ -117,11 +117,12 @@ Feature: @class -> @field
     Then the field foobar should have an @see glossary <other>
 
     Examples:
+    | other |
     | BestBabyNamesFor2014 |
     | LexiconOfCthulhu |
     | AdorableAnimals |
 
-  Scenario Outline: Define a field with an @see glossary that doesn't exist
+  Scenario: Define a field with an @see glossary that doesn't exist
     Given I have defined a valid class
     And I give it a valid field named foobar
     And I give foobar @see glossary DoesntExist
@@ -137,6 +138,7 @@ Feature: @class -> @field
     Then the field foobar should have an @see enumeration <other>
 
     Examples:
+    | other |
     | BestBabyNamesFor2014 |
     | LexiconOfCthulhu |
     | AdorableAnimals |
@@ -150,11 +152,12 @@ Feature: @class -> @field
     Then the field foobar should have an @see enumeration <other>
 
     Examples:
+    | other |
     | HowILoveThee |
     | MarksEvilBitmasks |
     | WaysToLeaveYourLover |
 
-  Scenario Outline: Define a field with an @see enumeration that doesn't exist
+  Scenario: Define a field with an @see enumeration that doesn't exist
     Given I have defined a valid class
     And I give it a valid field named foobar
     And I give foobar @see enumeration DoesntExist
@@ -188,7 +191,7 @@ Feature: @class -> @field
     | It's not the field, it's us |
     | We still want to be friends with this field and hope it moves on to other classes that will love it for who it is |
 
-  Scenario Outline: Define a field as @deprecated twice
+  Scenario: Define a field as @deprecated twice
     Given I have defined a valid class
     And I give it a valid field named foobar
     And I give foobar @deprecated once

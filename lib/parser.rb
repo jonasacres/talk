@@ -20,7 +20,7 @@ module Talk
 
     # signal that we are done parsing files, and it is time to do final validation
     def finalize
-      close_active_context
+      close_active_context until @contexts.empty?
       @closed_contexts.each { |ctx| ctx.finalize }
       finalized = true
     end
@@ -35,7 +35,7 @@ module Talk
     end
 
     def parse(filename, contents)
-      contents = contents.split("\n") unless contents.class == "Array"
+      contents = contents.split("\n") unless contents.is_a? Array
       contents.each_with_index { |line, line_num| parse_line(line.strip.split, filename, line_num+1) }
     end
 

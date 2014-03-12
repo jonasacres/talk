@@ -31,7 +31,7 @@ Feature: @enumeration -> @constant
     | AnotherEnumeration | ConstantA | 2 | A Description | ConstantB | 1 | Another Description |
     | AThirdEnumeration | ConstantOne | 2 | Numeral two | ConstantTwo | 2 | Ordinal two |
 
-  Scenario Outline: Define constants with implied values
+  Scenario: Define constants with implied values
     Given that I define a valid enumeration named AnEnumeration
     And I define a valid constant named Constant0
     And I define a valid constant named Constant1

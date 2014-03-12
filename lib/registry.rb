@@ -128,6 +128,11 @@ module Talk
         s
       end
 
+      def reset
+        @registry = nil
+        @reverse = nil
+      end
+
       def to_s
         return "Empty registry" if @registry.nil? or @registry.empty?
         s = ""
