@@ -38,9 +38,9 @@ module Talk
       end
 
       def tag_description(params={})
-        defaults = { :class => :string, :required => true }.merge(params)
-        tag(:description, defaults)
-        bridge_tag_to_property :description
+        params = { :class => :string, :required => true, :bridge => true }.merge(params)
+        tag(:description, params)
+        bridge_tag_to_property :description if params[:bridge]
       end
 
       def tag_end

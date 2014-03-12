@@ -85,6 +85,16 @@ def make_glossary(name=nil, description=nil)
   @last_object = glossary
 end
 
+# Define a new @term
+def make_term(name=nil, value=nil, description=nil)
+  term = TalkTag.new("@term")
+  term.add_data(name) unless name.nil?
+  term.add_data(value) unless value.nil?
+  term.add_child(make_description(description)) unless description.nil?
+
+  @last_object = term
+end
+
 # Define a new @enumeration
 def make_enumeration(name=nil, description=nil)
   enumeration = TalkTag.new("@enumeration")
@@ -126,7 +136,7 @@ end
 # Renders actual talk string to give to parser
 def render
   all_tags = @classes + @glossaries + @enumerations
-  (all_tags.map { |x| x.to_s }).join("\n\n")
+  talk = (all_tags.map { |x| x.to_s }).join("\n\n")
 end
 
 # Finds an item with a given name in the specified tag set in the result hash
@@ -165,6 +175,15 @@ def field_in_result_class(res_cls, field_name)
     return f if f[:name] == field_name
   end
 
+  nil
+end
+
+# Finds a specific term in a result glossary
+def term_in_result_glossary(res_gloss, term_name)
+  res_gloss = result_glossary(res_gloss) if res_gloss.is_a? String
+  return nil if res_gloss.nil?
+
+  res_gloss[:term].each { |t| return t if t[:name] == term_name }
   nil
 end
 
