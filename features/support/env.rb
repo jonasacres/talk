@@ -95,6 +95,16 @@ def make_term(name=nil, value=nil, description=nil)
   @last_object = term
 end
 
+# Define a new @constant
+def make_constant(name=nil, value=nil, description=nil)
+  constant = TalkTag.new("@constant")
+  constant.add_data(name) unless name.nil?
+  constant.add_data(value) unless value.nil?
+  constant.add_data(description) unless description.nil?
+
+  @last_object = constant
+end
+
 # Define a new @enumeration
 def make_enumeration(name=nil, description=nil)
   enumeration = TalkTag.new("@enumeration")
@@ -184,6 +194,15 @@ def term_in_result_glossary(res_gloss, term_name)
   return nil if res_gloss.nil?
 
   res_gloss[:term].each { |t| return t if t[:name] == term_name }
+  nil
+end
+
+# Finds a specific constant in a result enumeration
+def constant_in_result_enumeration(res_enum, constant_name)
+  res_enum = result_enumeration(res_enum) if res_enum.is_a? String
+  return nil if res_enum.nil?
+
+  res_enum[:term].each { |t| return t if t[:name] == constant_name }
   nil
 end
 
