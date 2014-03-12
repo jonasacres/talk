@@ -1,3 +1,7 @@
 gem 'json'
-gem 'cucumber'
-gem 'rspec'
+
+group :test do
+  gem 'cucumber'
+  gem 'rspec'
+  gem 'rake'
+end
