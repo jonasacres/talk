@@ -68,9 +68,9 @@ Feature: @enumeration -> @constant
     Then the constant Expressive should have value <output>
 
     Examples:
-    | expression | output |
-    | 0          | 0      |
-    | cos(0)     | 1      |
-    | 0x10       | 16     |
-    | 1 << 8     | 256    |
+    | expression  | output |
+    | 0           | 0      |
+    | Math.cos(0) | 1      |
+    | 0x10        | 16     |
+    | 1 << 8      | 256    |
     

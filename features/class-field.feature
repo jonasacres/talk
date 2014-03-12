@@ -6,8 +6,8 @@ Feature: @class -> @field
     Then the field <name> should have type <type> and description <description>
 
     Examples:
-    | name | type | description |
-    | foobar8 | int8 | I am an 8-bit integer |
+    | name      | type   | description |
+    | foobar8   | int8   | I am an 8-bit integer |
     | foobarU16 | uint16 | I am a 16-bit unsigned integer |
 
   Scenario Outline: Define a field with implicit description

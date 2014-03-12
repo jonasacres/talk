@@ -25,13 +25,13 @@ end
 Then(/^the constant (\S+) should have value (.+)$/) do |constant_name, value|
   enum = result_enumeration(@enumerations.last)
   constant = constant_in_result_enumeration(enum, constant_name)
-  expect(constant[:value]).to eq(value)
+  expect(constant[:value]).to eq(value.to_f)
 end
 
 Then(/^the constant (\S+) of enumeration (\S+) should have value (\S+)$/) do |constant_name, enumeration_name, value|
   enum = result_enumeration(enumeration_name)
   constant = constant_in_result_enumeration(enum, constant_name)
-  expect(constant[:value]).to eq(value)
+  expect(constant[:value]).to eq(value.to_f)
 end
 
 Then(/^the constant (\S+) of enumeration (\S+) should have description (.+)$/) do |constant_name, enumeration_name, description_text|

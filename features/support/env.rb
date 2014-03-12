@@ -202,7 +202,7 @@ def constant_in_result_enumeration(res_enum, constant_name)
   res_enum = result_enumeration(res_enum) if res_enum.is_a? String
   return nil if res_enum.nil?
 
-  res_enum[:term].each { |t| return t if t[:name] == constant_name }
+  res_enum[:constant].each { |t| return t if t[:name] == constant_name }
   nil
 end
 

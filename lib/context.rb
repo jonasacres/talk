@@ -269,6 +269,8 @@ module Talk
 
       return v.to_val if @class_methods[v.class].include? :to_val
       return v.to_h if @class_methods[v.class].include? :to_h
+      return v.to_f if v.is_a? Fixnum or v.is_a? Float
+
       v.to_s
     end
   end
