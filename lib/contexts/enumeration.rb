@@ -11,6 +11,7 @@ postprocess lambda { |ctx|
 	#     constant[n-1] + 1    n > 0
 	#        0                 otherwise
 	# }
+	return if ctx[:constant].nil?
 	ctx[:constant].inject(0) do |value, constant|
 		value = constant[:value] unless constant[:value].nil?
 		constant[:value] = value

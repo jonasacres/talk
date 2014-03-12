@@ -38,7 +38,12 @@ Given(/^I give (\S+) @see (\S+) (\S+)$/) do |field_name, ref_type, ref_name|
 end
 
 Then(/^the field (\S+) should have an @see (\S+) (\S+)$/) do |field_name, ref_type, ref_name|
-  pending # express the regexp above with the code you wish you had
+  ref_type = "enumeration" if(ref_type) == "enum"
+  result_field = field_in_result_class(last_class.words[0], field_name)
+  expect(result_field[:see]).not_to be_nil
+
+  matches = result_field[:see].select { |x| x[:type] == ref_type and x[:name] == ref_name }
+  expect(matches.length).to eq(1)
 end
 
 Given(/^I give (\S+) @caveat (.+)$/) do |field_name, caveat_text|

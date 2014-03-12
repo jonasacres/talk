@@ -125,19 +125,35 @@ end
 
 # Renders actual talk string to give to parser
 def render
-  (@classes.map { |x| x.to_s }).join("\n\n")
+  all_tags = @classes + @glossaries + @enumerations
+  (all_tags.map { |x| x.to_s }).join("\n\n")
+end
+
+# Finds an item with a given name in the specified tag set in the result hash
+def result_object_named_in_set(basis, set)
+  name = basis
+  name = basis.words[0] if basis.is_a? TalkTag
+
+  @results[set].each do |item|
+    return item if item[:name] == name
+  end
+
+  return nil
 end
 
 # Finds a class in the result hash
 def result_class(cls)
-  name = cls
-  name = cls.words[0] if cls.is_a? TalkTag
+  result_object_named_in_set(cls, :class)
+end
 
-  @results[:class].each do |cls|
-    return cls if cls[:name] == name
-  end
+# Finds a class in the result hash
+def result_enumeration(enum)
+  result_object_named_in_set(enum, :enumeration)
+end
 
-  return nil
+# Finds a class in the result hash
+def result_glossary(glossary)
+  result_object_named_in_set(glossary, :glossary)
 end
 
 # Finds a specific field in a result class

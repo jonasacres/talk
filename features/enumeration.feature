@@ -23,7 +23,7 @@ Feature: @enumeration
     | AnotherEnumeration | Here is another one! |
 
   Scenario: Define an @enumeration with no description
-    Given I define an enumeration
+    Given I define an enumeration named SomeEnumeration
     But I don't give it a description
     When I get the result hash
     Then there should be a parse error
