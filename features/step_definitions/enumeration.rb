@@ -1,7 +1,3 @@
-Before do |scenario|
-  clean_slate
-end
-
 Given(/^I define an enumeration named (\S+) with description (.+)$/) do |enum_name, description_text|
   make_enumeration(enum_name).add_child(make_description(description_text))
 end

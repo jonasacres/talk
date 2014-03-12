@@ -22,13 +22,13 @@ Feature: @glossary
     | AnotherGlossary | More testing please |
 
   Scenario: Define an @glossary with no description
-    Given I define a glossary
+    Given I define a glossary named SomeGlossary
     But I don't give it a description
     When I get the result hash
     Then there should be a parse error
 
   Scenario: Define an @glossary with no name
-    Given I define an glossary
+    Given I define a glossary
     But I don't give it a name
     When I get the result hash
     Then there should be a parse error

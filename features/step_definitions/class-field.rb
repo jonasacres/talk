@@ -1,7 +1,3 @@
-Before do |scenario|
-  clean_slate
-end
-
 Given(/^I give it a field named (\S+) of type (\S+) and description (.+)$/) do |name, type, description|
   last_class.add_child(make_field(name, type).add_child(make_description(description)))
 end
