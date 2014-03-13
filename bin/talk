@@ -29,7 +29,7 @@ begin
 	ARGV.each do |file|
 		process_file(file)
 	end
-
+	
 	puts JSON.generate($parser.results)
 rescue Talk::ParseError => e
 	puts e

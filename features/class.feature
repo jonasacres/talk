@@ -7,9 +7,9 @@ Feature: @class
     And it should have description <description>
 
     Examples:
-    | name | description |
-    | Lumberjack | I am a lumberjack, and I am acceptable |
-    | com.example.JavaClass | I have a hierarchical name |
+    | name                  | description                            |
+    | Lumberjack            | I am a lumberjack, and I am acceptable |
+    | com.example.JavaClass | I have a hierarchical name             |
 
   Scenario Outline: Define a class with an implicit @description
     Given I have defined a class named <name>
@@ -19,9 +19,9 @@ Feature: @class
     And it should have description <description>
 
     Examples:
-    | name | description |
-    | Lumberjack | I am a lumberjack, and I am acceptable |
-    | com.example.JavaClass | I have a hierarchical name |
+    | name                  | description                            |
+    | Lumberjack            | I am a lumberjack, and I am acceptable |
+    | com.example.JavaClass | I have a hierarchical name             |
 
   Scenario: Define a class without a description
     Given I have defined a class named NoDescriptionClsas
@@ -44,7 +44,7 @@ Feature: @class
     Then the class ChildClass should have @inherits <base>
 
     Examples:
-    | base |
+    | base      |
     | BaseClass |
     | YourDaddy |
 
@@ -55,11 +55,11 @@ Feature: @class
     Then there should be a parse error
 
     Examples:
-    | base |
+    | base        |
     | DoesntExist |
-    | uint16 |
-    | string |
-    | talkobject |
+    | uint16      |
+    | string      |
+    | talkobject  |
 
   Scenario Outline: Define a class that @inherits twice
     Given I have defined a valid class named BaseClass1
@@ -71,7 +71,7 @@ Feature: @class
     Then there should be a parse error
 
     Examples:
-    | base_1 | base_2 |
+    | base_1     | base_2     |
     | BaseClass1 | BaseClass1 |
     | BaseClass1 | BaseClass2 |
 
@@ -83,13 +83,13 @@ Feature: @class
 
     Examples:
     | implement | value |
-    | 0 | false |
-    | off | false |
-    | false | false |
-    | no | false |
-    | NO | false |
-    | False | false |
-    | 1 | true |
-    | on | true |
-    | true | true |
-    | yes | true |
+    | 0         | false |
+    | off       | false |
+    | false     | false |
+    | no        | false |
+    | NO        | false |
+    | False     | false |
+    | 1         | true  |
+    | on        | true  |
+    | true      | true  |
+    | yes       | true  |

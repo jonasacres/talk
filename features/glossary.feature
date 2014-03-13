@@ -6,8 +6,8 @@ Feature: @glossary
     And the glossary named <name> should have description <description>
 
     Examples:
-    | name | description |
-    | AGlossary | A test glossary |
+    | name            | description         |
+    | AGlossary       | A test glossary     |
     | AnotherGlossary | More testing please |
 
   Scenario Outline: Define an @glossary with an implicit description
@@ -17,8 +17,8 @@ Feature: @glossary
     And the glossary named <name> should have description <description>
 
     Examples:
-    | name | description |
-    | AGlossary | A test glossary |
+    | name            | description         |
+    | AGlossary       | A test glossary     |
     | AnotherGlossary | More testing please |
 
   Scenario: Define an @glossary with no description

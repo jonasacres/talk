@@ -28,20 +28,20 @@ Feature: @class -> @field
     Then the field foobar should have type <type>
 
     Examples:
-    | type |
-    | uint8 |
-    | uint16 |
-    | uint32 |
-    | uint64 |
-    | int8 |
-    | int16 |
-    | int32 |
-    | int64 |
-    | string |
-    | object |
+    | type       |
+    | uint8      |
+    | uint16     |
+    | uint32     |
+    | uint64     |
+    | int8       |
+    | int16      |
+    | int32      |
+    | int64      |
+    | string     |
+    | object     |
     | talkobject |
-    | real |
-    | bool |
+    | real       |
+    | bool       |
 
   Scenario Outline: Define a field with an invalid type
     Given I have defined a valid class
@@ -50,9 +50,9 @@ Feature: @class -> @field
     Then there should be a parse error
 
     Examples:
-    | type |
-    | Lies |
-    | IAmTheDevil|
+    | type          |
+    | Lies          |
+    | IAmTheDevil   |
     | LookMaNoParse |
 
   Scenario Outline: Define a field with a sibling class
@@ -63,9 +63,9 @@ Feature: @class -> @field
     Then the field foobar should have type <sibling>
 
     Examples:
-    | sibling |
-    | Brother |
-    | Sister |
+    | sibling              |
+    | Brother              |
+    | Sister               |
     | GenderNeutralSibling |
 
   Scenario Outline: Define a field with a sibling class referenced by abbreviation
@@ -76,9 +76,9 @@ Feature: @class -> @field
     Then the field foobar should have type <sibling>
 
     Examples:
-    | sibling | abbrev |
-    | com.example.Sibling | Sibling |
-    | com.example.Sibling | example.Sibling |
+    | sibling             | abbrev              |
+    | com.example.Sibling | Sibling             |
+    | com.example.Sibling | example.Sibling     |
     | com.example.Sibling | com.example.Sibling |
 
   Scenario: Define a field that refers to its container class
@@ -96,8 +96,8 @@ Feature: @class -> @field
     Then the field foobar should have an @see class <other>
 
     Examples:
-    | other |
-    | AClass |
+    | other     |
+    | AClass    |
     | CoolClass |
     | LameClass |
 
@@ -117,10 +117,10 @@ Feature: @class -> @field
     Then the field foobar should have an @see glossary <other>
 
     Examples:
-    | other |
+    | other                |
     | BestBabyNamesFor2014 |
-    | LexiconOfCthulhu |
-    | AdorableAnimals |
+    | LexiconOfCthulhu     |
+    | AdorableAnimals      |
 
   Scenario: Define a field with an @see glossary that doesn't exist
     Given I have defined a valid class
@@ -138,10 +138,10 @@ Feature: @class -> @field
     Then the field foobar should have an @see enumeration <other>
 
     Examples:
-    | other |
+    | other                |
     | BestBabyNamesFor2014 |
-    | LexiconOfCthulhu |
-    | AdorableAnimals |
+    | LexiconOfCthulhu     |
+    | AdorableAnimals      |
 
   Scenario Outline: Define a field with an @see enum
     Given I have defined a valid enumeration named <other>
@@ -152,9 +152,9 @@ Feature: @class -> @field
     Then the field foobar should have an @see enumeration <other>
 
     Examples:
-    | other |
-    | HowILoveThee |
-    | MarksEvilBitmasks |
+    | other                |
+    | HowILoveThee         |
+    | MarksEvilBitmasks    |
     | WaysToLeaveYourLover |
 
   Scenario: Define a field with an @see enumeration that doesn't exist
@@ -174,9 +174,9 @@ Feature: @class -> @field
     And the field foobar should have a @caveat <message_2>
 
     Examples:
-    | message_1 | message_2 |
-    | This field is pure evil | May contain null, as well as fatal amounts of arsenic |
-    | Field might be garbage | Field might also have the information you need to survive |
+    | message_1               | message_2                                                 |
+    | This field is pure evil | May contain null, as well as fatal amounts of arsenic     |
+    | Field might be garbage  | Field might also have the information you need to survive |
 
   Scenario Outline: Define a field as @deprecated
     Given I have defined a valid class
@@ -186,9 +186,9 @@ Feature: @class -> @field
     Then the field foobar should have @deprecated <message>
 
     Examples:
-    | message |
-    | It wasn't working out |
-    | It's not the field, it's us |
+    | message                                                                                                           |
+    | It wasn't working out                                                                                             |
+    | It's not the field, it's us                                                                                       |
     | We still want to be friends with this field and hope it moves on to other classes that will love it for who it is |
 
   Scenario: Define a field as @deprecated twice
@@ -207,9 +207,9 @@ Feature: @class -> @field
     Then the field foobar should have @version <version>
 
     Examples:
-    | version |
-    | 1 |
-    | 3.0 |
+    | version                 |
+    | 1                       |
+    | 3.0                     |
     | sheepishly stroked lion |
 
   Scenario Outline: Define a field with two @version tags
@@ -222,5 +222,5 @@ Feature: @class -> @field
 
     Examples:
     | version_1 | version_2 |
-    | 1.0 | 1.0 |
-    | 1.0 | 2.0 |
+    | 1.0       | 1.0       |
+    | 1.0       | 2.0       |

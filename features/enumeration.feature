@@ -6,8 +6,8 @@ Feature: @enumeration
     And the enumeration named <name> should have description <description>
 
     Examples:
-    | name | description |
-    | AnEnumeration | This is a test enum |
+    | name               | description          |
+    | AnEnumeration      | This is a test enum  |
     | AnotherEnumeration | Here is another one! |
 
 
@@ -18,8 +18,8 @@ Feature: @enumeration
     And the enumeration named <name> should have description <description>
 
     Examples:
-    | name | description |
-    | AnEnumeration | This is a test enum |
+    | name               | description          |
+    | AnEnumeration      | This is a test enum  |
     | AnotherEnumeration | Here is another one! |
 
   Scenario: Define an @enumeration with no description
