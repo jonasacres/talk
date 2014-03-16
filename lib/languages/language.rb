@@ -1,5 +1,5 @@
 require 'erb'
-require 'FileUtils'
+require 'fileutils'
 
 def classname_for_filename(name) # /path/to/file_name.rb to FileName
   File.basename(name.to_s, ".rb").split('_').collect { |word| word.capitalize }.join("")
