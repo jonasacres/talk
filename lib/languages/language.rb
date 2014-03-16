@@ -1,4 +1,5 @@
 require 'erb'
+require 'FileUtils'
 
 def classname_for_filename(name) # /path/to/file_name.rb to FileName
   File.basename(name.to_s, ".rb").split('_').collect { |word| word.capitalize }.join("")
@@ -50,12 +51,46 @@ module Talk
       end
     end
 
+    def initialize
+      @written = {}
+    end
+
     def render(base, target)
       @base = base
       @target = target
       @output_path = find_output_path
 
       make_source
+      prune if @target[:prune]
+    end
+
+    def write(path, contents, conditional=true)
+      @written[File.absolute_path(path)] = contents
+      return if conditional and File.exists? path and IO.read(path) == contents
+      
+      FileUtils::mkdir_p(File.dirname(path))
+      File.write(path, contents)
+    end
+
+    def prune
+      # Delete anything we didn't conditionally write, unless it's a directory
+      dirs = []
+      Dir.glob(@output_path+"/**/*").each do |path|
+        abs_path = File.absolute_path(path)
+        unless @written.has_key?(abs_path) then
+          if File.directory?(abs_path) then
+            dirs.push abs_path
+          else
+            FileUtils::rm(abs_path)
+          end
+        end
+      end
+
+      # Now sort the directories by length, so longest directories are first
+      # Since these are abspaths, that should guarantee subdirectories come before parents
+      # Then delete each empty directory, tested by containing no entries other than '.' and '..'
+      dirs.sort! { |a,b| b.length <=> a.length }
+      dirs.each { |dir| FileUtils::rmdir(dir) if (Dir.entries(dir) - %w{ . .. }).empty? }
     end
 
     def find_output_path
@@ -68,25 +103,24 @@ module Talk
       erb = ERB.new(template_contents)
       erb.filename = template_file
       source = erb.result(binding)
-      puts "\t#{File.join(@output_path, output_file)}"
-      puts source
-      puts
-      # File.write(File.join(@output_path, output_file), source)
+      filename = File.join(@output_path, output_file)
+      write(filename, source)
       source
     end
 
     def meta(name)
       return nil if @target[:meta].nil?
+      name = name.to_s
 
       @target[:meta].each do |meta|
-        return meta[:value] if meta[:name] == name
+        return meta[:value] if meta[:name].to_s == name
       end
 
       nil
     end
 
       def string_overlap(a,b)
-      Math.min(a.length, b.length).times do |i|
+      [a.length, b.length].min.times do |i|
         if a[i] != b[i] then
           return "" if i == 0
           return a[0..i-1]
@@ -102,10 +136,12 @@ module Talk
         if prefix.nil? then
           prefix = cls[:name]
         else
-          prefix = string_overlap(prefix, cls)
+          prefix = string_overlap(prefix, cls[:name])
           return nil if prefix.length == 0
         end
       end
+
+      prefix
     end
 
     def classname_for_filename(name) # /path/to/file_name.rb to FileName

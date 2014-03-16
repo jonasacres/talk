@@ -1,10 +1,11 @@
 def make_source
-  prefix = common_class_prefix if meta(:namespace) == "true"
+  @prefix = common_class_prefix if meta(:namespace) == "true"
   master_files = [ "TalkClasses.h", "TalkClassesForward.h", "TalkConstants.h", "TalkObjectList.h"]
   master_files.each { |template| generate_template(template) }
 
   @base[:class].each do |cls|
     @current_class = cls
+    @current_class[:field] ||= []
     file_base = filename_for_class(cls)
     [".h", ".m"].each { |ext| generate_template(file_base+ext, "class"+ext+".erb") }
   end
@@ -12,7 +13,9 @@ end
 
 def filename_for_class(cls)
   if meta(:namespace) == "true" then
-    namespace = cls[:name][prefix.length..-1].split(".")
+    namespace = cls[:name][@prefix.length..-1].split(".")[0..-2]
+    return truncated_name(cls) if namespace.empty?
+
     namespace = namespace[1..-1] while namespace[0].length == 0
     return File.join(namespace.join("/"), truncated_name(cls))
   end
@@ -125,6 +128,11 @@ def assist_line(field)
   elements.join(".")
 end
 
+def dynamic_body_for_named_wrapper
+  return "@dynamic body" if truncated_name(@current_class) == 'NamedObjectWrapper'
+  ""
+end
+
 def primitive_type(unsigned, size)
   type = "int#{size}_t"
   type = "u" + type if unsigned
@@ -132,7 +140,7 @@ def primitive_type(unsigned, size)
 end
 
 def field_definition(cls, field)
-  base_type = field[:type].first
+  base_type = field[:type].last
   objc_type = case
     when is_array?(base_type)
       "NSMutableArray *"
