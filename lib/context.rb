@@ -199,8 +199,8 @@ module Talk
       meets_min = words_left >= min
       meets_max = max.nil? or words_left <= max
 
-      parse_error("Property #{prop_def[:name]} takes at least #{min} #{pluralize min, 'word'}; got #{word_count}") unless meets_min
-      parse_error("Property #{prop_def[:name]} takes at most #{max} #{pluralize min, 'word'}; got #{word_count}") unless meets_max
+      parse_error("Property #{prop_def[:name]} takes at least #{min} #{pluralize min, 'word'}; got #{words_left}") unless meets_min
+      parse_error("Property #{prop_def[:name]} takes at most #{max} #{pluralize min, 'word'}; got #{words_left}") unless meets_max
 
       [ offset, word_count-1 ]
     end
@@ -258,6 +258,11 @@ module Talk
           dict[k] = hashify_value(v)
         end
       end
+
+      dict[:__meta] ||= {}
+      dict[:__meta][:file] = @file
+      dict[:__meta][:tag] = @tag
+      dict[:__meta][:line] = @line
 
       dict
     end

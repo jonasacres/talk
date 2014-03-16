@@ -3,9 +3,12 @@ require "context"
 
 module Talk
   attr_reader :contexts, :finalized
+
   @contexts = {}
 
   class Parser
+    attr_accessor :basepath
+    
     def self.error(tag, file, line, message)
       near_msg = tag.nil? ? "" : " near @#{tag}"
       raise ParseError, "#{file}:#{line}  parse error#{near_msg}: #{message}"
@@ -30,6 +33,15 @@ module Talk
       @base.to_h
     end
 
+    def trim_filename(filename)
+      if @basepath.nil? == false and filename.start_with? @basepath then
+        filename = filename[@basepath.length .. -1]
+        filename = filename[1..-1] while filename.start_with? "/"
+      end
+
+      filename
+    end
+
     def parse_file(filename)
       parse(filename, IO.read(filename))
     end
@@ -42,7 +54,7 @@ module Talk
     def parse_line(words, file, line)
       return if line_is_comment?(words)
 
-      @file = file
+      @file = trim_filename(file)
       @line = line
       words.each { |word| parse_word(word) }
     end

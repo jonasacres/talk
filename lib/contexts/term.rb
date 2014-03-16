@@ -1,5 +1,11 @@
 property :name
-property :value, :length => [1,nil]
+property :value, :length => [0,nil]
 
-tag_description :bridge => false
+tag_description :bridge => false, :required => false
 tag_end
+
+postprocess lambda { |ctx|
+  if ctx[:value].nil? or ctx[:value].length == 0 then
+    ctx[:value] = ctx[:name]
+  end
+}

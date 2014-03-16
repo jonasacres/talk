@@ -5,8 +5,23 @@ lib = File.join(basepath, 'lib')
 $LOAD_PATH.unshift(lib) if File.directory?(lib) && !$LOAD_PATH.include?(lib)
 
 require 'talk'
-require 'pp'
 require 'json'
+require 'trollop'
+require 'pp'
+
+$opts = Trollop::options do
+  version "Talk 2.0 (c) 2013 Jonas Acres"
+  banner <<-EOS
+Talk is a compile-to-source protocol specification language.
+
+Usage:
+       talk [options] [source directories]
+where [options] are:
+EOS
+
+  opt :target, "Generate output based on specified target name", :type => :string, :multi => true
+  opt :targets, "List valid targets"
+end
 
 $parser = Talk::Parser.new
 
@@ -17,6 +32,7 @@ def process_file(file)
 	end
 
 	if File.directory?(file) then
+		$parser.basepath = file
 		Dir.glob(File.join(file, "/**/*.talk")).each do |subfile|
 			process_file(subfile)
 		end
@@ -25,12 +41,46 @@ def process_file(file)
 	end
 end
 
+def find_target_named(results, target_name)
+	return nil if results[:target].nil?
+	idx = results[:target].find_index { |target| target[:name] == target_name }
+	return results[:target][idx] unless idx.nil?
+	nil
+end
+
+def render_target(results, target_name)
+		target = find_target_named(results, target_name)
+		if target.nil? then
+			puts "Unknown target #{target_name}"
+			exit 1
+		end
+
+		lang = Talk::Language.language_named(target[:language])
+		if lang.nil? then
+			puts "Target #{target[:name]} has unsupported language #{target[:language]}"
+			exit 1
+		else
+			lang.render(results, target)
+		end
+end
+
+def render_targets(results)
+	$opts[:target].each { |target_name| render_target(results, target_name) }
+end
+
+def list_targets(results)
+	results[:target].each { |target| puts "\t#{target[:name]} (#{target[:language]})" }
+end
+
+def process_files
+	ARGV.each { |file| process_file(file) }
+	$parser.results
+end
+
 begin
-	ARGV.each do |file|
-		process_file(file)
-	end
-	
-	puts JSON.generate($parser.results)
+	results = process_files
+	list_targets(results) if $opts[:targets]
+	render_targets(results)
 rescue Talk::ParseError => e
 	puts e
 	exit 1

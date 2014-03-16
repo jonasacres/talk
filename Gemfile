@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'erb'
+gem 'trollop'
 gem 'json'
 
 group :test do
