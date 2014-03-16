@@ -67,7 +67,7 @@ def comment_block(tag, indent_level=0)
   lines.push(wrap_text_to_width(tag[:description], 80, indent + " *  ")) unless tag[:description].nil?
   lines.push(indent + " *  ")
   lines.push(indent + " *  " + definition_reference(tag))
-  lines.push(" */")
+  lines.push(indent + " */")
 
   lines.join("\n")
 end
@@ -97,7 +97,7 @@ def mapped_name(container_name, object_name, type, name_key=:name)
   container_name = container_name[:name] if container_name.is_a? Hash
 
   @target[:map].each do |map|
-    matches = map[:type] == type.to_s and map[:class_name] == container_name and map[:field_name] == object_name
+    matches = (map[:type] == type.to_s && map[:class_name] == container_name && map[:field_name] == object_name)
     return map[:new_field_name] if matches
   end
 
@@ -107,7 +107,7 @@ end
 def assist_line(field)
   return nil if field[:type].length <= 1
   elements = []
-  field[:type][1..-1].reverse.each do |type|
+  field[:type].reverse.each do |type|
     elements.push case
       when is_array?(type)
         "array"
@@ -118,11 +118,11 @@ def assist_line(field)
       when is_native?(type)
         "native"
       else
-        raise "Unknown container type '#{type}' in #{field[:type].join('')}"
+        truncated_name(type)
     end
   end
 
-  elements.join
+  elements.join(".")
 end
 
 def primitive_type(unsigned, size)
@@ -149,7 +149,7 @@ def field_definition(cls, field)
     when base_type == "string"
       "NSString *"
     else
-      base_type + " *"
+      truncated_name(base_type) + " *"
   end
   "#{objc_type} #{mapped_name(cls, field, :field)}"
 end

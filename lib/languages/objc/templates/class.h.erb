@@ -4,19 +4,24 @@
 <%= comment_block(@current_class) %>
 @interface <%= "#{truncated_name(@current_class)}" %> : <%= "#{superclass(@current_class)}" %>
 {
-    <% unless @current_class[:field].nil?
-         @current_class[:field].each do |field| %>
-        <%= comment_block(field) %>
-        <%= field_definition(@current_class, field) %>; // <%= field[:type].reverse.join('') %>
-    <%   end
-       end %>
+    <%=
+    unless @current_class[:field].nil?
+      lines = []
+      @current_class[:field].each do |field|
+        lines.push comment_block(field, 1)
+        lines.push "\t"+field_definition(@current_class, field) + "; // " + field[:type].join('')
+        lines.push ""
+      end
+
+      lines.join("\n")
+    end %>
 }
 
-<%
+<%=
 unless @current_class[:field].nil?
-   @current_class[:field].each do |field| %>
-@property (readwrite,strong,nonatomic) <%= field_definition(@current_class, field) %>;
-<% end
+  (@current_class[:field].map do |field|
+    "@property (readwrite,strong,nonatomic) " + field_definition(@current_class, field)
+  end).join("\n")
 end %>
 
 +(NSString *) fullyQualifiedClassName;

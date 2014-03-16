@@ -69,8 +69,8 @@ module Talk
       erb.filename = template_file
       source = erb.result(binding)
       puts "\t#{File.join(@output_path, output_file)}"
-      #puts source
-      #puts
+      puts source
+      puts
       # File.write(File.join(@output_path, output_file), source)
       source
     end
