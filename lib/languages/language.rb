@@ -130,6 +130,22 @@ module Talk
       a.length < b.length ? a : b
     end
 
+    def wrap_text_to_width(text, width=80, preamble="")
+      width -= preamble.length
+      words = text.split(/\s+/)
+      lines = []
+
+      words.each do |word|
+        if lines.empty? or (lines.last + " " + word).length >= width then
+          lines.push (preamble + word)
+        else
+          lines.last << " " + word
+        end
+      end
+
+      lines.empty? ? "" : lines.join("\n")
+    end
+
     def common_class_prefix
       prefix = nil
       @base[:class].each do |cls|
@@ -146,6 +162,11 @@ module Talk
 
     def classname_for_filename(name) # /path/to/file_name.rb to FileName
       File.basename(name.to_s, ".rb").split('_').collect { |word| word.capitalize }.join("")
+    end
+
+    def truncated_name(name)
+      name = name[:name] if name.is_a? Hash
+      name.split('.').last
     end
   end
 end

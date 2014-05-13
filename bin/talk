@@ -21,7 +21,13 @@ EOS
 
   opt :target, "Generate output based on specified target name", :type => :string, :multi => true
   opt :targets, "List valid targets"
+  opt :omit, "Strip a top-level tag", :type => :string, :multi => true
+  opt :include, "Limit to a top-level tag", :type => :string, :multi => true
+  opt :no, "Do not render specified tag type at any level", :type => :string, :multi => true
+  opt :json, "Dump raw JSON to console"
 end
+
+Trollop::die :omit, "cannot be combined with include" if $opts[:omit].length > 0 and $opts[:include].length > 0
 
 $parser = Talk::Parser.new
 
@@ -77,8 +83,39 @@ def process_files
 	$parser.results
 end
 
+def strip_tag(container, tag)
+	if container.is_a? Array then
+		return container.map! { |v| strip_tag(v, tag) }
+	elsif not container.is_a? Hash then
+		return container
+	end
+
+	container.delete(tag)
+	container.each { |k, v| container[k] = strip_tag(v, tag) }
+end
+
+def strip_tags(container, tags)
+	tags.each { |tag| container = strip_tag(container, tag.to_sym) }
+	container
+end
+
+def strip_omitted(results, omitted)
+	omitted.each { |tag| results.delete(tag.to_sym) }
+end
+
+def strip_nonincluded(results, included)
+	included.map! { |key| key.to_sym }
+	trimmed = {}
+	(results.keys.select { |key| included.include? key }).each { |key| trimmed[key] = results[key] }
+	trimmed
+end
+
 begin
 	results = process_files
+	results = strip_tags(results, $opts[:no])
+	results = strip_omitted(results, $opts[:omit]) unless $opts[:omit].empty?
+	results = strip_nonincluded(results, $opts[:include]) unless $opts[:include].empty?
+	puts JSON.generate(results) if $opts[:json]
 	list_targets(results) if $opts[:targets]
 	render_targets(results)
 rescue Talk::ParseError => e
