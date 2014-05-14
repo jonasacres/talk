@@ -102,7 +102,8 @@ module Talk
 
       ## Subclassing magic
       def all_contexts
-        Dir["#{$:[0]}/contexts/*.rb"].collect { |file| context_for_name(name) }
+        path = File.join(File.dirname(__FILE__), "contexts/*.rb");
+        Dir[path].collect { |file| context_for_name(name) }
       end
 
       def context_for_name(name)
@@ -130,7 +131,7 @@ module Talk
       end
 
       def canonical_path_for_name(name)
-        File.absolute_path("lib/contexts/" + File.basename(name.to_s, ".rb") + ".rb")
+        File.absolute_path(File.join(File.dirname(__FILE__), "contexts", File.basename(name.to_s, ".rb")) + ".rb")
       end
 
       def classname_for_filename(name) # /path/to/file_name.rb to FileName
