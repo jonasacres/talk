@@ -25,6 +25,7 @@ EOS
   opt :include, "Limit to a top-level tag", :type => :string, :multi => true
   opt :no, "Do not render specified tag type at any level", :type => :string, :multi => true
   opt :json, "Dump raw JSON to console"
+  opt :upgrade, "Upgrade old-style protocols to new-style"
 end
 
 Trollop::die :omit, "cannot be combined with include" if $opts[:omit].length > 0 and $opts[:include].length > 0
@@ -110,11 +111,21 @@ def strip_nonincluded(results, included)
 	trimmed
 end
 
+def upgrade_protocols(results)
+	methods = {}
+	results[:method].each { |method| methods[method[:name].to_sym] = method }
+	results[:protocol].each do |proto|
+		proto[:method].map! { |method| methods[method.to_sym] }
+	end
+	results.delete(:method)
+end
+
 begin
 	results = process_files
 	results = strip_tags(results, $opts[:no])
 	results = strip_omitted(results, $opts[:omit]) unless $opts[:omit].empty?
 	results = strip_nonincluded(results, $opts[:include]) unless $opts[:include].empty?
+	upgrade_protocols(results) if $opts[:upgrade]
 	puts JSON.generate(results) if $opts[:json]
 	list_targets(results) if $opts[:targets]
 	render_targets(results)

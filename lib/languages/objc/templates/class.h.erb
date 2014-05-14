@@ -15,7 +15,7 @@
   lines.join("\n")
 %>}
 
-<%= (@current_class[:field].map { |f| "@property (readwrite,strong,nonatomic) " + field_definition(@current_class, f) }).join("\n") %>
+<%= (@current_class[:field].map { |f| "@property #{field_tags(f)} #{field_definition(@current_class, f)};" }).join("\n") %>
 +(NSString *) fullyQualifiedClassName;
 
 @end
