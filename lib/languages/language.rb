@@ -19,7 +19,7 @@ module Talk
 
     class << self
       def path_for_language(lang)
-        File.absolute_path("lib/languages/#{lang}/#{lang}.rb")
+        File.absolute_path(File.join(File.dirname(__FILE__), "#{lang}/#{lang}.rb"))
       end
 
       def load_supported_languages
