@@ -113,6 +113,10 @@ def assist_line(field)
   elements.join(".")
 end
 
+def class_field_maps(cls)
+  @target[:map].select { |map| map[:class_name] == truncated_name(cls[:name]) }
+end
+
 def trimmed_fields(cls)
   return cls[:field] unless truncated_name(cls[:name]) == 'NamedObjectWrapper'
   cls[:field].reject { |f| f[:name] == "body" }

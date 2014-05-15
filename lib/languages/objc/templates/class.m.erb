@@ -13,13 +13,20 @@
 @synthesize <%= (trimmed_fields(@current_class).map { |f| mapped_name(@current_class, f[:name], :field) }).join(', ') %>;
 <% end %>
 
+<% unless class_field_maps(@current_class).empty? then %>
 -(void) initKeymaps
 {
   [super initKeymaps];
-<% @target[:map].each do |map|
-    next unless map[:class_name] == truncated_name(@current_class[:name])%>
+<% class_field_maps(@current_class).each do |map| %>
   [self mapSerializedKey:@"<%= map[:field_name] %>" toLocalKey:@"<%= map[:new_field_name] %>"];
-<% end %>}
+<% end %>
+}
+
+-(BOOL) needsKeymapping
+{
+  return YES;
+}
+<% end %>
 
 <% unless (@current_class[:field].reject { |f| assist_line(f).nil? }).length == 0 then %>
 -(NSString *) containerStructureForLocalKey: (NSString *) localKey
