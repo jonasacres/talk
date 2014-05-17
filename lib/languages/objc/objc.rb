@@ -110,7 +110,14 @@ def assist_line(field)
     end
   end
 
-  elements.join(".")
+  stringified = elements.map { |e| "@\"#{e}\"" }
+  "@[#{stringified.join(",")}]"
+end
+
+def protocol_method_name(p_name, m_name)
+  p_name = p_name[0].upcase + p_name[1..-1]
+  m_name = m_name[0].upcase + m_name[1..-1]
+  "kProto#{p_name}Method#{m_name}"
 end
 
 def class_field_maps(cls)

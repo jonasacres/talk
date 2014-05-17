@@ -20,3 +20,16 @@ enum <%= truncated_name(enumeration[:name]) %>
 };
 
 <% end # enumeration %>
+
+<% @base[:protocol].each do |protocol| %>
+
+// @protocol <%= protocol[:name] %>
+<%= comment_block(protocol) %>
+
+<% protocol[:method].each do |method| %>
+<%= comment_block(method) %>
+#define <%= protocol_method_name(protocol[:name], method[:name]) %> @"<%= method[:name] %>"
+
+<% end %>
+
+<% end # protocol %>

@@ -29,17 +29,20 @@
 <% end %>
 
 <% unless (@current_class[:field].reject { |f| assist_line(f).nil? }).length == 0 then %>
--(NSString *) containerStructureForLocalKey: (NSString *) localKey
-{<%
-  @current_class[:field].each do |field|
-    assist = assist_line(field)
-    unless assist.nil? %>
-  if([localKey isEqualToString:@"<%= mapped_name(@current_class, field[:name], :field) %>"]) return @"<%= assist %>";
-    <%
-    end
-  end
-  %>
-  return [super containerStructureForLocalKey:localKey];
+-(NSDictionary *) containerStructure
+{
+  NSDictionary *local = @{
+<%
+    @current_class[:field].each do |field|
+      assist = assist_line(field)
+      next if assist.nil?
+%>    @"<%= mapped_name(@current_class, field[:name], :field) %>": <%= assist %>,
+<%  end %>
+  };
+
+  NSMutableDictionary *merged = [[super containerStructure] mutableCopy];
+  [merged addEntriesFromDictionary:local];
+  return merged;
 }
 <% end %>
 +(NSString *) fullyQualifiedClassName
