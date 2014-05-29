@@ -59,26 +59,6 @@ def definition_reference(tag)
   "@talkFile #{tag[:__meta][:file]}:#{tag[:__meta][:line]}"
 end
 
-def rootclass
-  @target[:rootclass] || "TalkObject"
-end
-
-def superclass(cls)
-  cls[:inherits] || rootclass
-end
-
-def is_native?(type)
-  type != "talkobject" and is_primitive?(type)
-end
-
-def is_array?(type)
-  type == "[]"
-end
-
-def is_dict?(type)
-  type == "{}"
-end
-
 def mapped_name(container_name, object_name, type, name_key=:name)
   object_name = object_name[:name] if object_name.is_a? Hash
   container_name = container_name[:name] if container_name.is_a? Hash

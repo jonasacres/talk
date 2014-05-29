@@ -9,6 +9,10 @@ def make_source
       generate_template(filename_for_entity(@current), type.to_s+".java.erb")
     end
   end
+  @base[:protocol].each do |current|
+    @current = current
+    generate_template("com/acres4/common/protocol/#{current[:name]}.java", "TalkProtocol.java.erb")
+  end
 end
 
 def filename_for_entity(name)
@@ -51,13 +55,13 @@ def list_references_for_class(cls)
 end
 
 def import_classes
-  (list_references_for_class(@current).map { |name| "import #{name};"}).join("\n")
+  (list_references_for_class(@current).map { |name| "import #{name[0]};"}).join("\n")
 end
 
 def comment_block(tag, indent_level=0)
   lines = []
   indent = "\t" * indent_level
-  lines.push(indent + "/*!")
+  lines.push(indent + "/**")
   lines.push(wrap_text_to_width(tag[:description], 80, indent + " *  ")) unless tag[:description].nil?
   lines.push(indent + " *  ")
   lines.push(indent + " *  " + definition_reference(tag))
@@ -80,11 +84,28 @@ def field_datatype_rec(field, stack)
 
   r = field_datatype_rec(field, stack[0 .. -2])
   if is_array? t then
-    "[]"
+    "#{r}[]"
   elsif is_dict? t then
-    "Map<String, #{r}>"
+    "Map<String, #{convert_field_for_map(r)}>"
   else
     nil
+  end
+end
+
+def convert_field_for_map(field)
+  case field
+  when "byte"
+    "Byte"
+  when "short"
+    "Short"
+  when "int"
+    "Integer"
+  when "long"
+    "Long"
+  when "double"
+    "Double"
+  else
+    field
   end
 end
 
@@ -100,22 +121,23 @@ def field_datatype_basic(field, type)
     when "object"
       "Object"
     when "talkobject"
-      "TalkObject"
-    else
-      size = integer_size(type)
-      size *= 2 if is_unsigned? type # java has no unsigned type; just use the next size up
-      case 
-      when 8
-        "byte"
-      when 16
-        "short"
-      when 32
-        "int"
-      when 64
-        "long"
-      when 128
-        "BigDecimal"
-      end
+      rootclass
+    when "int8"
+      "byte"
+    when "uint8"
+      "short"
+    when "int16"
+      "short"
+    when "uint16"
+      "int"
+    when "int32"
+      "int"
+    when "uint32"
+      "long"
+    when "int64"
+      "long"
+    when "uint64"
+      "BigDecimal"
     end
   else
     truncated_name type
@@ -133,13 +155,33 @@ def field_variable(field)
   lines.join("\n")
 end
 
+def setter_name(field)
+  "set#{field[:name].sub(/^(\w)/) {|s| s.capitalize}}"
+end
+
+def getter_name(field)
+  "get#{field[:name].sub(/^(\w)/) {|s| s.capitalize}}"
+end
+
 def field_accessors(field)
-  lines.push wrap_text(field[:description], " *  ", 1)
-  lines.push field[:deprecated] if field.has_key? :deprecated
-  lines.push definition_reference(field)
-  lines.push " * @param #{field[:name]} #{field[:description]}"
+  lines = []
+  lines.push "\t/**"
+  lines.push "\t#{wrap_text_to_width(field[:description])}"
+  lines.push "\t#{field[:deprecated] if field.has_key? :deprecated}"
+  lines.push "\t#{definition_reference(field)}"
+  lines.push "\t@param #{field[:name]} #{field[:description]}"
+  lines.push "\t*/"
   lines.push "\tpublic void #{setter_name(field)}(#{field_datatype(field)} #{field[:name]}) {"
-  lines.push "\t\tthis.#{field[:name]} = #{field[:name]}"
+  lines.push "\t\tthis.#{field[:name]} = #{field[:name]};"
+  lines.push "\t}"
+  lines.push "\t/**"
+  lines.push "\t#{wrap_text_to_width(field[:description])}"
+  lines.push "\t#{field[:deprecated] if field.has_key? :deprecated}"
+  lines.push "\t#{definition_reference(field)}"
+  lines.push "\t@return #{field[:name]} #{field[:description]}"
+  lines.push "\t*/"
+  lines.push "\tpublic #{field_datatype(field)} #{getter_name(field)}() {"
+  lines.push "\t\treturn this.#{field[:name]};"
   lines.push "\t}"
   lines.join "\n"
 end

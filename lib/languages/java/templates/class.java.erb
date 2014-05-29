@@ -5,17 +5,16 @@ package <%= class_package(@current) %>;
 <%= comment_block(@current) %>
 public class <%= truncated_name(@current) %> extends <%= superclass(@current) %>
 {
-<%= detail_comment_block(@current) %>
     /**
      *  <%= truncated_name @current %> - Default Constructor 
-     * 
      */
      public <%= truncated_name @current %>() {}
 <%= 
     (@current[:field].map do |f|
         field_variable(f)
     end).join("\n")
-
+%>
+<%=
     (@current[:field].map do |f|
         field_accessors(f)
     end).join("\n")

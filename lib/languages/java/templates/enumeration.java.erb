@@ -3,8 +3,8 @@ package <%= class_package(@current) %>;
 
 <%= comment_block(@current) %>
 public class <%= truncated_name(@current) %> extends <%= rootclass %>
-{<% @current[:field].each do |field| %>
-    // <%= field[:description] %>
-    @TalkDescription(description = "<%= field[:description] %>")
-    public final static int <%= field[:name] %> = <%= field[:value] %>;
-<%= end %>}
+{<% @current[:constant].each do |field| %>
+    /** <%= field[:description] %> */
+    @TalkDescription(description = <%= field[:description].inspect %>)
+    public final static int <%= field[:name] %> = <%= field[:value].to_i %>;
+<% end %>}
