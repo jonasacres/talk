@@ -5,6 +5,6 @@ package <%= class_package(@current) %>;
 public class <%= truncated_name(@current) %> extends <%= rootclass %>
 {<% @current[:constant].each do |field| %>
     /** <%= field[:description] %> */
-    @TalkDescription(description = <%= field[:description].inspect %>)
+    @TalkDescription(description = <%= (field[:description] ? field[:description].inspect : "\"nil\"") %>)
     public final static int <%= field[:name] %> = <%= field[:value].to_i %>;
 <% end %>}
