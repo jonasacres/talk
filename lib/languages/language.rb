@@ -13,6 +13,26 @@ def is_primitive?(type)
   primitives.include? type
 end
 
+def rootclass
+  @target[:rootclass] || "TalkObject"
+end
+
+def superclass(cls)
+  cls[:inherits] || rootclass
+end
+
+def is_native?(type)
+  type != "talkobject" and is_primitive?(type)
+end
+
+def is_array?(type)
+  type == "[]"
+end
+
+def is_dict?(type)
+  type == "{}"
+end
+
 module Talk
   class Language
     attr_reader :supported_languages
