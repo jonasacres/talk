@@ -52,12 +52,21 @@ def list_references_for_class(cls)
   end
 
   references.add("java.math.BigDecimal") if class_has_bigdec(cls)
+  references.add("java.util.Map") if class_has_map(cls)
   references.to_a
 end
 
 def class_has_bigdec(cls)
   cls[:field].each do |f|
     return true if f[:type][0] == "uint64"
+  end
+
+  false
+end
+
+def class_has_map(cls)
+  cls[:field].each do |f|
+    return true if f[:type].include? "{}"
   end
 
   false
