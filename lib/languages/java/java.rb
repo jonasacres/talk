@@ -47,15 +47,24 @@ def list_references_for_class(cls)
   references = Set.new
   cls[:field].each do |field|
     unless is_primitive?(field[:type].first) then
-      references.add(field[:type])
+      references.add(class_named(field[:type][0], @base[:class])[:name])
     end
   end
 
+  references.add("java.math.BigDecimal") if class_has_bigdec(cls)
   references.to_a
 end
 
+def class_has_bigdec(cls)
+  cls[:field].each do |f|
+    return true if f[:type][0] == "uint64"
+  end
+
+  false
+end
+
 def import_classes
-  (list_references_for_class(@current).map { |name| "import #{name[0]};"}).join("\n")
+  (list_references_for_class(@current).map { |name| "import #{name};"}).join("\n")
 end
 
 def comment_block(tag, indent_level=0)

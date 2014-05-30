@@ -33,6 +33,15 @@ def is_dict?(type)
   type == "{}"
 end
 
+def class_named(name, classes)
+  name_elements = name.split(".")
+  classes.each do |defn|
+    return defn if defn[:name].end_with?(name)
+  end
+
+  nil
+end
+
 module Talk
   class Language
     attr_reader :supported_languages
