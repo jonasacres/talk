@@ -1,3 +1,5 @@
+require 'uglifier'
+
 def make_source
   @prefix = common_class_prefix if meta(:namespace) == "true"
   transform = meta(:minify) ? lambda { |source| Uglifier.compile(source)} : nil
