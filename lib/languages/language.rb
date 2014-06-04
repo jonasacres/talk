@@ -200,6 +200,8 @@ module Talk
     end
 
     def mapped_name(container_name, object_name, type, name_key=:name)
+      return object_name if @target[:map].nil? or @target[:map].empty?
+
       object_name = object_name[:name] if object_name.is_a? Hash
       container_name = container_name[:name] if container_name.is_a? Hash
       container_name = truncated_name(container_name)

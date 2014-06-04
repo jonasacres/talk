@@ -18,7 +18,7 @@ module Talk
 
     ## Parser interface
 
-    def parse(word, file, line)
+    def parse(word, file=nil, line=nil)
       @property_words.push word
     end
 

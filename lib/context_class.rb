@@ -185,6 +185,12 @@ module Talk
 
         add_tag_singular(name) unless params[:multi]
         add_tag_required(name) if params[:required]
+        postprocess(lambda do |c|
+          return if c.has_key? name
+          tag = c.start_tag(name, c.file, c.line)
+          tag.parse(params[:default])
+          c.end_tag(tag)
+        end) if params[:default]
       end
 
       def add_tag_singular(name)
