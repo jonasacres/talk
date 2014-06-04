@@ -123,6 +123,7 @@ module Talk
     end
 
     def find_output_path
+      return File.join(ENV['TALK_DESTROOT'], @target[:destination]) if ENV['TALK_DESTROOT']
       @target[:destination]
     end
 
