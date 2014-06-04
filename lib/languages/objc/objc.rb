@@ -59,19 +59,6 @@ def definition_reference(tag)
   "@talkFile #{tag[:__meta][:file]}:#{tag[:__meta][:line]}"
 end
 
-def mapped_name(container_name, object_name, type, name_key=:name)
-  object_name = object_name[:name] if object_name.is_a? Hash
-  container_name = container_name[:name] if container_name.is_a? Hash
-  container_name = truncated_name(container_name)
-
-  @target[:map].each do |map|
-    matches = (map[:type] == type.to_s && map[:class_name] == container_name && map[:field_name] == object_name)
-    return map[:new_field_name] if matches
-  end
-
-  object_name
-end
-
 def assist_line(field)
   return nil if field[:type].length <= 1
   elements = []

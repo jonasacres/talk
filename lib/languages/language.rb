@@ -126,12 +126,13 @@ module Talk
       @target[:destination]
     end
 
-    def generate_template(output_file, template_file=nil)
+    def generate_template(output_file, template_file=nil, transform=nil)
       template_file ||= output_file + ".erb"
       template_contents = IO.read(File.join(self.path, "templates", template_file))
       erb = ERB.new(template_contents)
       erb.filename = template_file
       source = erb.result(binding)
+      source = transform.call(source) unless transform.nil?
       filename = File.join(@output_path, output_file)
       write(filename, source)
       source
@@ -197,5 +198,19 @@ module Talk
       name = name[:name] if name.is_a? Hash
       name.split('.').last
     end
+
+    def mapped_name(container_name, object_name, type, name_key=:name)
+      object_name = object_name[:name] if object_name.is_a? Hash
+      container_name = container_name[:name] if container_name.is_a? Hash
+      container_name = truncated_name(container_name)
+
+      @target[:map].each do |map|
+        matches = (map[:type] == type.to_s && map[:class_name] == container_name && map[:field_name] == object_name)
+        return map[:new_field_name] if matches
+      end
+
+      object_name
+    end
+
   end
 end
