@@ -26,6 +26,12 @@
 {
   return YES;
 }
+
++(NSDictionary *) keyMaps
+{
+  return @{<%= (class_field_maps(@current_class).map { |map| "@\"#{map[:field_name]}\":@\"#{map[:new_field_name]}\"" }).join(",") %>};
+}
+
 <% end %>
 
 <% unless (@current_class[:field].reject { |f| assist_line(f).nil? }).length == 0 then %>
