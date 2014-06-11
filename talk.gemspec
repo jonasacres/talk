@@ -1,7 +1,7 @@
 Gem::Specification.new do |s|
   s.name        = 'talk'
   s.executables << 'talk'
-  s.version     = '2.1'
+  s.version     = '2.1.1'
   s.date        = '2014-06-04'
   s.summary     = "Compile-to-source protocol contract specification language"
   s.description = "A lightweight language for specifying protocol contracts. Compiles to source in Java, Javascript, ObjC and Ruby."
@@ -14,5 +14,8 @@ Gem::Specification.new do |s|
   s.executables   = s.files.grep(%r{^bin/}) { |f| File.basename(f) }
   s.test_files    = s.files.grep(%r{^(test|s|features)/})
   s.require_paths = ["lib"]
+
+  s.add_runtime_dependency 'trollop', "~> 2.0"
+  s.add_runtime_dependency 'uglifier', "~> 2.2.1"
 
 end
