@@ -1,8 +1,8 @@
 Gem::Specification.new do |s|
   s.name        = 'talk'
   s.executables << 'maketalk'
-  s.version     = '2.2'
-  s.date        = '2014-06-04'
+  s.version     = '2.2.1'
+  s.date        = '2014-06-12'
   s.summary     = "Compile-to-source protocol contract specification language"
   s.description = "A lightweight language for specifying protocol contracts. Compiles to source in Java, Javascript, ObjC and Ruby."
   s.authors     = ["Jonas Acres"]
@@ -17,5 +17,6 @@ Gem::Specification.new do |s|
 
   s.add_runtime_dependency 'trollop', "~> 2.0"
   s.add_runtime_dependency 'uglifier', "~> 2.2.1"
+  s.add_runtime_dependency 'therubyracer', "~> 0.12.1"
 
 end
