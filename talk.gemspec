@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name        = 'talk'
-  s.executables << 'talk'
+  s.executables << 'maketalk'
   s.version     = '2.2'
   s.date        = '2014-06-04'
   s.summary     = "Compile-to-source protocol contract specification language"
