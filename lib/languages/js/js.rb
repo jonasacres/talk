@@ -48,7 +48,7 @@ def class_line(cls)
     fields[mapped][:canonicalName] = field[:name] unless mapped == field[:name]
   end
 
-  out << "TalkObject.addClass('#{cls[:name]}', #{fields.to_json}, #{truncated_name(superclass(cls))});"
+  out << "TalkObject.addClass('#{cls[:name]}', #{fields.to_json}, '#{truncated_name(superclass(cls))}');"
   out.join("\n")
 end
 
