@@ -36,7 +36,8 @@ end
 def class_named(name, classes)
   name_elements = name.split(".")
   classes.each do |defn|
-    return defn if defn[:name].end_with?(name)
+    defn_elements = defn[:name].split(".")
+    return defn if defn_elements.length >= name_elements.length && defn_elements[-name_elements.length .. -1] == name_elements
   end
 
   nil
