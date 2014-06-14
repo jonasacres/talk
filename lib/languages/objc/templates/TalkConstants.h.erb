@@ -25,6 +25,7 @@ enum <%= truncated_name(enumeration[:name]) %>
 
 // @protocol <%= protocol[:name] %>
 <%= comment_block(protocol) %>
+#define <%= protocol_constant_name(protocol[:name]) %> @"<%= protocol[:name] %>"
 
 <% protocol[:method].each do |method| %>
 <%= comment_block(method) %>
