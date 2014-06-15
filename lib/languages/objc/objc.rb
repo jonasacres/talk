@@ -143,25 +143,20 @@ def field_definition(cls, field)
   "#{objc_type} #{mapped_name(cls, field, :field)}"
 end
 
-def prune_definition(dict)
-  return dict unless dict.is_a? Hash
+def prune_definition(original)
+  return original.map { |child| prune_definition(child) } if original.is_a? Array
+  return original unless original.is_a? Hash
   pruned = {}
-  dict.each do |key, value|
-    next if ["description", "__meta"].include?(key)
-    pruned[key] = prune_definition(dict[key])
+  original.each do |key, value|
+    next if ["description", "__meta"].include?(key.to_s)
+    pruned[key] = prune_definition(original[key])
   end
 
-  dict
+  pruned
 end
 
 def safe_escape(str)
-  escaped = ""
-  str.each_char do |x|
-    escaped += "\\" if(x == '"' || x == "\\")
-    escaped += x
-  end
-
-  escaped
+  str.gsub("\\", "\\\\").gsub("\"", "\\\"")
 end
 
 def talk_definition
