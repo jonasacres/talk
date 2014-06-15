@@ -1,11 +1,10 @@
-<%= @base.to_json %>
 #import "TalkDefinition.h"
 
 @implementation TalkDefinition (Automap)
 
 +(NSString *) talkJson
 {
-  return @"<%= Shellwords.escape(talk_definition.to_json) %>";
+  return @"<%= safe_escape(talk_definition.to_json) %>";
 }
 
 @end
