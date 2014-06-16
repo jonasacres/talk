@@ -11,7 +11,7 @@ def make_source
   end
   @base[:protocol].each do |current|
     @current = current
-    generate_template("com/acres4/common/protocol/#{current[:name]}.java", "TalkProtocol.java.erb")
+    generate_template("com/acres4/common/protocol/#{current[:name].split('/').first}/#{current[:name].split('/').last.capitalize}.java", "TalkProtocol.java.erb")
   end
 end
 
