@@ -10,7 +10,7 @@ require 'trollop'
 require 'pp'
 
 $opts = Trollop::options do
-  version "Talk 2.0 (c) 2013 Jonas Acres"
+  version "Talk #{Talk::VERSION} (c) 2013 Jonas Acres"
   banner <<-EOS
 Talk is a compile-to-source protocol specification language.
 
@@ -26,6 +26,7 @@ EOS
   opt :no, "Do not render specified tag type at any level", :type => :string, :multi => true
   opt :json, "Dump raw JSON to console"
   opt :upgrade, "Upgrade old-style protocols to new-style"
+  opt :version, "Show Talk version"
 end
 
 Trollop::die :omit, "cannot be combined with include" if $opts[:omit].length > 0 and $opts[:include].length > 0
