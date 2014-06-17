@@ -1,7 +1,11 @@
+lib = File.expand_path('../lib', __FILE__)
+$LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
+require 'version'
+
 Gem::Specification.new do |s|
   s.name        = 'talk'
   s.executables << 'maketalk'
-  s.version     = '2.3.1'
+  s.version     = Talk::VERSION
   s.date        = '2014-06-12'
   s.summary     = "Compile-to-source protocol contract specification language"
   s.description = "A lightweight language for specifying protocol contracts. Compiles to source in Java, Javascript, ObjC and Ruby."
