@@ -1,3 +1,3 @@
 module Talk
-  VERSION = "2.3.2"
+  VERSION = "2.3.3"
 end

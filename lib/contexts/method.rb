@@ -4,10 +4,11 @@ reference :request, :classes, :skip => ["none"]
 
 property :name
 
-tag_description
+tag :description, :class => :string
 tag :request, :class => :string
 tag :response, :class => :string
-tag :requriements, :class => :string
+tag :requirements, :class => :string
+tag :followup, :class => :string
 tag :origin, :class => :string, :allowed => [ "client", "server", "both" ]
 tag :needs, :class => :string, :allowed => [ "nothing", "connection", "both" ]
 tag_end
