@@ -117,7 +117,7 @@ def upgrade_protocols(results)
 	return if results[:method].nil? || results[:method].empty?
 	results[:method].each { |method| methods[method[:name].to_sym] = method }
 	results[:protocol].each do |proto|
-		proto[:method].map! { |method| methods[method.to_sym] }
+		proto[:method].map! { |method| methods[method[:name].to_sym] }
 	end
 	results.delete(:method)
 end
