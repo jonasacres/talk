@@ -142,6 +142,11 @@ TalkObject.prototype.__validateInteger = function(key, param, unsigned, size)
   var def = this.__definition[key];
 
   // Validate number
+    if(typeof(param) == 'string')
+    {
+      if(param.match(new RegExp("^(0x)?[0-9]+$"))) param = parseInt(param);
+    }
+
     if(typeof(param) != 'number') 
     {
       var errMsg = "Expected " + key + " to be a number";
@@ -226,6 +231,10 @@ TalkObject.prototype.__validateInteger = function(key, param, unsigned, size)
 TalkObject.prototype.__validateReal = function(key, param) 
 {
   var def = this.__definition[key];
+  if(typeof(param) == 'string')
+  {
+    if(param.match(new RegExp("^[0-9]+(\.[0-9]+)?$"))) param = parseFloat(param);
+  }
   if(typeof(param) != 'number') return "Expected numeric value for " + key;
   if(def.minValue !== undefined && def.minValue !== null && param < def.minValue) 
   {
