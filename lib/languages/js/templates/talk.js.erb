@@ -863,7 +863,7 @@ TalkObject.method = function(protocolName, method)
   
 };
 
-<%= (@base[:class].map { |cls| class_line(cls) }).compact.join("\n") %>
-<%= (@base[:protocol].map { |proto| protocol_line(proto) }).compact.join("\n") %>
-<%= (@base[:glossary].map { |glossary| glossary_line(glossary) }).compact.join("\n") %>
-<%= (@base[:enumeration].map { |enumeration| enumeration_line(enumeration) }).compact.join("\n") %>
+<%= (@base[:class].map { |cls| class_line(cls) rescue nil }).compact.join("\n") %>
+<%= (@base[:protocol].map { |proto| protocol_line(proto) rescue nil }).compact.join("\n") %>
+<%= (@base[:glossary].map { |glossary| glossary_line(glossary) rescue nil }).compact.join("\n") %>
+<%= (@base[:enumeration].map { |enumeration| enumeration_line(enumeration) rescue nil }).compact.join("\n") %>

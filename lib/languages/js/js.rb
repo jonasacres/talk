@@ -42,6 +42,8 @@ def class_line(cls)
   out << "// " + cls[:name]
 
   fields = {}
+
+  puts cls[:name]
   cls[:field].each do |field|
     mapped = mapped_name(cls[:name], field[:name], :field)
     fields[mapped] = {typeStack:field[:type]}

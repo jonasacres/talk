@@ -6,7 +6,7 @@ Gem::Specification.new do |s|
   s.name        = 'talk'
   s.executables << 'maketalk'
   s.version     = Talk::VERSION
-  s.date        = '2014-06-12'
+  s.date        = '2014-07-31'
   s.summary     = "Compile-to-source protocol contract specification language"
   s.description = "A lightweight language for specifying protocol contracts. Compiles to source in Java, Javascript, ObjC and Ruby."
   s.authors     = ["Jonas Acres"]
