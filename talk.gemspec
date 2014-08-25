@@ -8,7 +8,7 @@ Gem::Specification.new do |s|
   s.version     = Talk::VERSION
   s.date        = '2014-06-12'
   s.summary     = "Compile-to-source protocol contract specification language"
-  s.description = "A lightweight language for specifying protocol contracts. Compiles to source in Java, Javascript, ObjC and Ruby."
+  s.description = "A lightweight language for specifying protocol contracts. Compiles to source in Java, CSharp, Javascript, ObjC and Ruby."
   s.authors     = ["Jonas Acres"]
   s.email       = 'jonas@becuddle.com'
   s.homepage    = 'http://github.com/jonasacres/talk'
