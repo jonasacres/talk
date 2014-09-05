@@ -7,7 +7,7 @@ namespace  com.acres4.common.protocol
     		/**
     		<%= method[:description] %>
     		*/
-    		public static readonly string <%= method[:name].sub(/^(\w)/) {|s| s.capitalize} %> = "<%= method[:name] %>";
+    		public const string <%= method[:name].sub(/^(\w)/) {|s| s.capitalize} %> = "<%= method[:name] %>";
 
 		<% end %>
 	}

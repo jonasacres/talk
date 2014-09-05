@@ -5,6 +5,6 @@ namespace <%= class_package(@current) %>
 	public class <%= truncated_name(@current) %>
 	{
 		<% @current[:term].each do |field| %>
-  		public readonly static string <%= field[:name] %> = "<%= field[:value] %>";<% end %>
+  		public const string <%= field[:name] %> = "<%= field[:value] %>";<% end %>
 	}
 }
