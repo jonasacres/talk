@@ -42,10 +42,12 @@ def class_line(cls)
   out << "// " + cls[:name]
 
   fields = {}
-  cls[:field].each do |field|
-    mapped = mapped_name(cls[:name], field[:name], :field)
-    fields[mapped] = {typeStack:field[:type]}
-    fields[mapped][:canonicalName] = field[:name] unless mapped == field[:name]
+  unless cls[:field].nil? then
+    cls[:field].each do |field|
+      mapped = mapped_name(cls[:name], field[:name], :field)
+      fields[mapped] = {typeStack:field[:type]}
+      fields[mapped][:canonicalName] = field[:name] unless mapped == field[:name]
+    end
   end
 
   out << "TalkObject.addClass('#{cls[:name]}', #{fields.to_json}, '#{truncated_name(superclass(cls))}');"
