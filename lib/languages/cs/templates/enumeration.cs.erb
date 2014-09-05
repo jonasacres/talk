@@ -5,7 +5,7 @@ namespace <%= class_package(@current) %>
 	public class <%= truncated_name(@current) %> :  <%= rootclass %>
 	{<% @current[:constant].each do |field| %>
     	/** <%= field[:description] %> */
-    	public readonly static int <%= field[:name] %> = <%= field[:value].to_i %>;
+    	public const int <%= field[:name] %> = <%= field[:value].to_i %>;
 	<% end %>
 	}
 }
