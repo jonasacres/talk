@@ -11,4 +11,5 @@ tag :requirements, :class => :string
 tag :followup, :class => :string
 tag :origin, :class => :string, :allowed => [ "client", "server", "both" ]
 tag :needs, :class => :string, :allowed => [ "nothing", "connection", "both" ]
+tag :extra, :multi => true, :unique => :name
 tag_end

@@ -2,6 +2,7 @@ property :name
 property :value, :length => [0,nil]
 
 tag_description :bridge => false, :required => false
+tag :extra, :multi => true, :unique => :name
 tag_end
 
 postprocess lambda { |ctx|

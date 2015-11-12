@@ -29,6 +29,7 @@ tag :version, :class => :string
 tag :caveat, :class => :string, :multi => true
 tag :deprecated, :class => :string
 tag :see, :class => :reference, :multi => true
+tag :extra, :multi => true, :unique => :name
 tag_end
 
 postprocess(lambda do |ctx|

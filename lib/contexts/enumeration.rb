@@ -3,6 +3,7 @@ property :name
 
 tag_description
 tag :constant, :multi => true, :unique => :name
+tag :extra, :multi => true, :unique => :name
 tag_end
 
 postprocess lambda { |ctx|
