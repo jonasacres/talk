@@ -21,6 +21,10 @@ def superclass(cls)
   cls[:inherits] || rootclass
 end
 
+def is_subclass?(cls)
+  cls[:inherits]  
+end
+
 def is_native?(type)
   type != "talkobject" and is_primitive?(type)
 end
