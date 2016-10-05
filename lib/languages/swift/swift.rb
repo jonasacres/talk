@@ -62,7 +62,7 @@ def field_variable(field,cls)
   if field[:type].last == "object" || !is_primitive?(field[:type].last) then
     lines.push(var_def+"? = nil")
   elsif
-    lines.push(var_def+"= #{field_datatype(field,field[:type])}()")
+    lines.push(var_def+" = #{field_datatype(field,field[:type])}()")
   end
   lines.join("\n")
 end
